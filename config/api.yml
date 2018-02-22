@@ -1,0 +1,22 @@
+swagger: "2.0"
+info:
+  title: "5GTANGO REPOSITORY API"
+  description: "This is a proposal for the 5GTANGO REPOSITORY API"
+  version: "1.0.0"
+host: pre-int-sp-ath.5gtango.eu
+schemes:
+  - http
+basePath: /api
+produces:
+  - application/json
+
+paths:
+  /:
+    get:
+      summary: nsr URL root
+      description: Everything starts here.
+      tags:
+        - Root
+      responses:
+        '200':
+          description: This list of paths.
