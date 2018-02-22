@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Clean UP') {
       steps {
-        cleanWs(externalDelete: 'sudo rm -rf *')
+        cleanWs(externalDelete: 'sudo rm -rf reports')
       }
     }
     stage('Container Build') {
