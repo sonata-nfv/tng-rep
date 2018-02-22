@@ -10,7 +10,7 @@ pipeline {
       parallel {
         stage('Container Build') {
           steps {
-            echo 'Building..'
+            echo 'Building...'
           }
         }
         stage('Building tng-rep') {
