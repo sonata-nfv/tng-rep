@@ -87,15 +87,15 @@ RSpec.describe SonataVnfRepository do
     end
   end
 
-  #describe 'GET /vnf-instances' do
-  #  context 'without (UU)ID given' do
-  #    before do
-  #      get '/vnf-instances'
-  #    end
-  #    subject { last_response }
-  #    its(:status) { is_expected.to eq 200 }
-  #  end
-  #end
+  describe 'GET /vnf-instances' do
+    context 'without (UU)ID given' do
+      before do
+        get '/vnf-instances'
+      end
+      subject { last_response }
+      its(:status) { is_expected.to eq 200 }
+    end
+  end
 
   describe 'GET /vnf-instances/:uuid' do
     context 'with (UU)ID given' do
