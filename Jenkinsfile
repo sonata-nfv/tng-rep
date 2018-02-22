@@ -10,7 +10,7 @@ pipeline {
         }
         stage('Building tng-rep') {
           steps {
-            sh 'docker build -t registry.sonata-nfv.eu:5000/tng-rep'
+            sh 'docker build -t registry.sonata-nfv.eu:5000/tng-rep .'
           }
         }
       }
