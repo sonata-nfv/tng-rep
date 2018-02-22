@@ -2,10 +2,7 @@ pipeline {
   agent any
   stages {
     stage('Container Build') {
-     stage('Cleanup'){
-       cleanWs externalDelete: 'sudo rm -rf *'
-     } 
-     parallel {
+      parallel {
         stage('Container Build') {
           steps {
             echo 'Building..'
@@ -48,6 +45,11 @@ pipeline {
             sh 'docker push registry.sonata-nfv.eu:5000/tng-rep'
           }
         }
+      }
+    }
+    stage('Clean UP') {
+      steps {
+        cleanWs(externalDelete: 'sudo rm -rf *')
       }
     }
     stage('Publish results') {
