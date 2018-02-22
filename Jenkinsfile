@@ -27,7 +27,7 @@ pipeline {
             sh 'if ! [[ "$(docker inspect -f {{.State.Running}} mongo 2> /dev/null)" == "" ]]; then docker rm -fv mongo ; fi || true'
             sh 'docker run -p 27017:27017 -d --net tango --network-alias mongo --name mongo mongo'
             sh 'sleep 10'
-            sh 'docker run -u jenkins --rm=true --net tango --network-alias tng-rep -e RACK_ENV=test -v "$(pwd)/spec/reports:/app/spec/reports" registry.sonata-nfv.eu:5000/tng-rep rake ci:all'
+            sh 'docker run --user $(id -u) --rm=true --net tango --network-alias tng-rep -e RACK_ENV=test -v "$(pwd)/spec/reports:/app/spec/reports" registry.sonata-nfv.eu:5000/tng-rep rake ci:all'
             sh 'if ! [[ "$(docker inspect -f {{.State.Running}} mongo 2> /dev/null)" == "" ]]; then docker rm -fv mongo ; fi || true'
           }
         }
