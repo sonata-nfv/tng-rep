@@ -1,11 +1,6 @@
 pipeline {
   agent any
   stages {
-    stage('Clean UP') {
-      steps {
-        cleanWs(externalDelete: 'sudo rm -rf reports')
-      }
-    }
     stage('Container Build') {
       parallel {
         stage('Container Build') {
