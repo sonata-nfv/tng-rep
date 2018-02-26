@@ -46,6 +46,7 @@ task :start do
 
   puts "VAR `MAIN_DB`=#{ENV['MAIN_DB'].inspect}"
   puts "VAR `MAIN_DB_HOST`=#{ENV['MAIN_DB_HOST'].inspect}"
+  puts "VAR `SEC_FLAG`=#{ENV['SEC_FLAG'].inspect}"
 
   conf = File.expand_path('config.ru', File.dirname(__FILE__))
   exec("puma #{conf} -b tcp://0.0.0.0:4011")
@@ -79,7 +80,6 @@ namespace :init do
     
     server = 'tng-rep:4011'
     vnfr_random_sample = 'samples/sonata-demo/function-record/random-vnfr.yml'
-
 	  sh "curl -X POST -H \"Content-Type: application/x-yaml\" --data-binary @#{ vnfr_random_sample } --connect-timeout 30 http://#{ server }/records/vnfr/vnf-instances"
   
   end

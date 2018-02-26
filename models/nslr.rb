@@ -30,10 +30,32 @@
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
 
-root = ::File.dirname(__FILE__)
-require ::File.join(root, 'main')
+module BSON
+  class ObjectId
+    def to_json(*)
+      to_s.to_json
+    end
+    def as_json(*)
+      to_s.as_json
+    end
+  end
+end
 
-map('/records/nsr') { run SonataNsRepository.new }
-map('/records/nslr') { run SonataNslRepository.new }
-map('/records/vnfr') { run SonataVnfRepository.new }
-map('/') { run Sonata.new }
+module Mongoid
+  module Document
+    def serializable_hash(options = nil)
+      h = super(options)
+      h['uuid'] = h.delete('_id') if(h.has_key?('_id'))
+      h
+    end
+  end
+end
+
+# This is the Class for Network Services Records
+class Nslr
+  include Mongoid::Document
+  include Mongoid::Timestamps
+  include Mongoid::Pagination
+  include Mongoid::Attributes::Dynamic
+  store_in collection: 'nslr'
+end

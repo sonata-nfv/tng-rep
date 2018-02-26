@@ -36,5 +36,5 @@ class Vnfr
   include Mongoid::Pagination
   include Mongoid::Attributes::Dynamic
 
-  store_in collection: 'vnf'
+  store_in collection: 'vnfr'
 end

@@ -32,6 +32,7 @@
 
 # Set environment
 ENV['RACK_ENV'] ||= 'production'
+ENV['SEC_FLAG'] ||= true
 
 require 'sinatra'
 require 'sinatra/config_file'
@@ -76,22 +77,24 @@ configure do
   # STDOUT.sync = true
   retries = 0
   code = 503
-  while retries <= 6 do
-    # turn keycloak realm pub key into an actual openssl compat pub key
-    logger.debug "RETRY=#{retries}"
-    code, keycloak_key = get_public_key(settings.auth_address,
-                                        settings.auth_port,
-                                        settings.api_ver,
-                                        settings.pub_key_path)
-    logger.debug "PUBLIC_KEY_CODE=#{code}"
-    logger.debug "PUBLIC_KEY_MSG=#{keycloak_key}"
-    if code.to_i == 200
-      keycloak_key, errors = parse_json(keycloak_key)
-      logger.debug "PUBLIC_KEY=#{keycloak_key['items']['public-key']}"
-      break unless keycloak_key['items']['public-key'].empty?
+  if ENV['SEC_FLAG'] == 'true'
+    while retries <= 6 do
+      # turn keycloak realm pub key into an actual openssl compat pub key
+      logger.debug "RETRY=#{retries}"
+      code, keycloak_key = get_public_key(settings.auth_address,
+                                          settings.auth_port,
+                                          settings.api_ver,
+                                          settings.pub_key_path)
+      logger.debug "PUBLIC_KEY_CODE=#{code}"
+      logger.debug "PUBLIC_KEY_MSG=#{keycloak_key}"
+      if code.to_i == 200
+        keycloak_key, errors = parse_json(keycloak_key)
+        logger.debug "PUBLIC_KEY=#{keycloak_key['items']['public-key']}"
+        break unless keycloak_key['items']['public-key'].empty?
+      end
+      retries += 1
+      sleep(8)
     end
-    retries += 1
-    sleep(8)
   end
 
   if code.to_i == 200
@@ -169,6 +172,18 @@ end
 
 # Configurations for Services Repository
 class SonataNsRepository < Sinatra::Application
+  register Sinatra::ConfigFile
+  # Load configurations
+  config_file 'config/config.yml'
+  if ENV['SECOND_DB'].nil?
+    Mongoid.load!('config/mongoid.yml')
+  else
+    Mongoid.load!('config/mongoid.yml', :production_secondary)
+  end
+end
+
+# Configurations for Slice Repository
+class SonataNslRepository < Sinatra::Application
   register Sinatra::ConfigFile
   # Load configurations
   config_file 'config/config.yml'

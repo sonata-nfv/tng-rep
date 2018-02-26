@@ -31,4 +31,6 @@
 ## partner consortium (www.5gtango.eu).
 
 require_relative 'vnf'
+require_relative 'nslr'
 require_relative 'nsr'
+

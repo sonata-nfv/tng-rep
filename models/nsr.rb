@@ -57,5 +57,5 @@ class Nsr
   include Mongoid::Timestamps
   include Mongoid::Pagination
   include Mongoid::Attributes::Dynamic
-  store_in collection: 'nsr'
+  store_in collection: 'nsrs'
 end
