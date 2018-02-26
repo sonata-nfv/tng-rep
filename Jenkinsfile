@@ -53,4 +53,10 @@ pipeline {
       }
     }
   }
+  post {
+    always {
+      junit(allowEmptyResults: true, testResults: 'spec/reports/*.xml')
+      sh 'sudo chown jenkins: spec/reports/*'
+    }
+  }
 }
