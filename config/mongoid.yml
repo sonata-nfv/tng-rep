@@ -2,18 +2,18 @@
 development:
   sessions:
     default:
-      database: tng-repository
+      database: tng-rep
       hosts:
       - mongo:27017
 production:
   sessions:
     default:
-      database: tng-repository
+      database: tng-rep
       hosts:
       - mongo:27017
 test:
   sessions:
     default:
-      database: tng-repository
+      database: tng-rep
       hosts:
       - mongo:27017

@@ -44,8 +44,6 @@ gem 'rubyzip'
 gem 'sinatra', '~> 1.4.3', require: 'sinatra/base'
 gem 'sinatra-contrib', '~> 1.4.1', require: false
 
-
-
 group :development, :test do
   gem 'license_finder', '~> 2.1.2'
   gem 'rack-test', '~> 0.6', require: 'rack/test'

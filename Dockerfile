@@ -8,7 +8,9 @@ COPY Gemfile /app/
 WORKDIR /app
 RUN bundle install
 COPY . /app
-RUN rake yard
 ENV PORT 4011
+ENV SEC_FLAG false
+ENV MAIN_DB tng-rep
+ENV MAIN_DB_HOST mongo
 EXPOSE 4011
 CMD ["rake", "start"]
