@@ -57,9 +57,9 @@ class Sonata < Sinatra::Application
         'purpose' => 'REST API Structure and Capability Discovery nsr'
       },
       {
-        'uri' => '/records/nslr/',
+        'uri' => '/records/nsir/',
         'method' => 'GET',
-        'purpose' => 'REST API Structure and Capability Discovery nslr'
+        'purpose' => 'REST API Structure and Capability Discovery nsir'
       },
       {
         'uri' => '/records/vnfr/',

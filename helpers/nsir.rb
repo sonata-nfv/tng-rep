@@ -31,7 +31,7 @@
 ## partner consortium (www.5gtango.eu).
 
 # Class for Sonata_NS_Repository
-class SonataNslRepository < Sinatra::Application
+class SonataNsiRepository < Sinatra::Application
   require 'json'
   require 'yaml'
 
@@ -94,24 +94,24 @@ class SonataNslRepository < Sinatra::Application
   def interfaces_list
     [
       {
-        'uri' => '/records/nslr/',
+        'uri' => '/records/nsir/',
         'method' => 'GET',
-        'purpose' => 'REST API Structure and Capability Discovery /records/nslr/'
+        'purpose' => 'REST API Structure and Capability Discovery /records/nsir/'
       },
       {
-        'uri' => '/records/nslr/nsl-instances',
+        'uri' => '/records/nsir/ns-instances',
         'method' => 'GET',
-        'purpose' => 'List all NSLR'
+        'purpose' => 'List all NSIR'
       },
       {
-        'uri' => '/records/nslr/nsl-instances/:id',
+        'uri' => '/records/nsir/ns-instances/:id',
         'method' => 'GET',
-        'purpose' => 'List specific NSLR'
+        'purpose' => 'List specific NSIR'
       },
       {
-        'uri' => '/records/nslr/nsl-instances',
+        'uri' => '/records/nsir/ns-instances',
         'method' => 'POST',
-        'purpose' => 'Store a new NSLR'
+        'purpose' => 'Store a new NSIR'
       }
     ]
   end

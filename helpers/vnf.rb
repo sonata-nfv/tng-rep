@@ -127,7 +127,7 @@ class SonataVnfRepository < Sinatra::Application
     link = ''
     # Next link
     next_offset = offset + 1
-    next_vnfs = Vnf.paginate(page: next_offset, limit: limit)
+    next_vnfs = Vnfr.paginate(page: next_offset, limit: limit)
     begin
       link << '<localhost:4011/virtual-network-functions?offset=' + next_offset.to_s + '&limit=' + limit.to_s + '>; rel="next"' unless next_vnfs.empty?
     rescue
