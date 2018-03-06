@@ -35,8 +35,8 @@ require 'pp'
 require 'json'
 
 # This Class is the Class of Sonata Network Slice Repository
-class SonataNslRepository < Sinatra::Application
-  @@nslr_schema = JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/slice-record/nsir-schema.yml') { |f| f.read })))
+class SonataNsiRepository < Sinatra::Application
+  @@nsir_schema = JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/slice-record/nsir-schema.yml') { |f| f.read })))
   # https and openssl libs (require 'net/https' require 'openssl') enable access to external https links behind a proxy
 
   DEFAULT_OFFSET = '0'
@@ -50,15 +50,15 @@ class SonataNslRepository < Sinatra::Application
     halt 200, interfaces_list.to_yaml
   end
 
-  # @method get_nsl-instances
-  # @overload get "/nsl-instances"
-  # Gets all nsl-instances
-  get '/nsl-instances' do
+  # @method get_ns-instances
+  # @overload get "/ns-instances"
+  # Gets all ns-instances
+  get '/ns-instances' do
     uri = Addressable::URI.new
     params['offset'] ||= DEFAULT_OFFSET
     params['limit'] ||= DEFAULT_LIMIT
     uri.query_values = params
-    logger.info "nslr: entered GET /records/nslr/nsl-instances?#{uri.query}"
+    logger.info "nsir: entered GET /records/nsir/ns-instances?#{uri.query}"
 
     # transform 'string' params Hash into keys
     keyed_params = keyed_hash(params)
@@ -69,23 +69,23 @@ class SonataNslRepository < Sinatra::Application
     # get rid of :offset and :limit
     [:offset, :limit].each { |k| keyed_params.delete(k) }
     valid_fields = [:page]
-    logger.info "nslr: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}"
-    json_error 400, "nslr: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
+    logger.info "nsir: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}"
+    json_error 400, "nsir: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
 
-    requests = Nslr.paginate(page: params[:page], limit: params[:limit])
-    logger.info "nslr: leaving GET /requests?#{uri.query} with #{requests.to_json}"
+    requests = Nsir.paginate(page: params[:page], limit: params[:limit])
+    logger.info "nsir: leaving GET /requests?#{uri.query} with #{requests.to_json}"
     halt 200, requests.to_json if requests
-    json_error 404, 'nslr: No requests were found'
+    json_error 404, 'nsir: No requests were found'
 
     begin
       # Get paginated list
-      nslr_json = @nslr.to_json
+      nsir_json = @nsir.to_json
       if content_type == 'application/json'
-        return 200, nslr_json
+        return 200, nsir_json
       elsif content_type == 'application/x-yaml'
         headers 'Content-Type' => 'text/plain; charset=utf8'
-        nslr_yml = json_to_yaml(nslr_json)
-        return 200, nslr_yml
+        nsir_yml = json_to_yaml(nsir_json)
+        return 200, nsir_yml
       end
     rescue
       logger.error 'Error Establishing a Database Connection'
@@ -93,103 +93,103 @@ class SonataNslRepository < Sinatra::Application
     end
   end
 
-  # @method get_nsl-instances
-  # @overload get "/nsl-instances"
-  # Gets nsl-instances with an id
-  get '/nsl-instances/:id' do
+  # @method get_ns-instances
+  # @overload get "/ns-instances"
+  # Gets ns-instances with an id
+  get '/ns-instances/:id' do
     begin
-      @nslinstance = Nslr.find(params[:id])
+      @nsiinstance = Nsir.find(params[:id])
     rescue Mongoid::Errors::DocumentNotFound => e
       halt(404)
     end
-    nslr_json = @nslinstance.to_json
-    return 200, nslr_json
+    nsir_json = @nsiinstance.to_json
+    return 200, nsir_json
   end
 
-  # @method post_nsl-instances
-  # @overload post "/nsl-instances"
-  # Post a new nsl-instances information
-  post '/nsl-instances' do
+  # @method post_ns-instances
+  # @overload post "/ns-instances"
+  # Post a new ns-instances information
+  post '/ns-instances' do
     return 415 unless request.content_type == 'application/json'
     # Validate JSON format
     instance, errors = parse_json(request.body.read)
-    nslr_json = instance
+    nsir_json = instance
     return 400, errors.to_json if errors
     # Validation against schema
-    errors = validate_json(nslr_json, @@nslr_schema)
+    errors = validate_json(nsir_json, @@nsir_schema)
 
-    puts 'nslr: ', Nslr.to_json
+    puts 'nsir: ', Nsir.to_json
     return 422, errors.to_json if errors
 
     begin
-      instance = Nslr.find({ '_id' => instance['_id'] })
-      return 409, 'ERROR: Duplicated nslr UUID'
+      instance = Nsir.find({ '_id' => instance['_id'] })
+      return 409, 'ERROR: Duplicated nsir UUID'
     rescue Mongoid::Errors::DocumentNotFound => e
       # Continue
     end
 
     begin
-      instance = Nslr.create!(instance)
+      instance = Nsir.create!(instance)
     rescue Moped::Errors::OperationFailure => e
-      return 409, 'ERROR: Duplicated nslr UUID'
+      return 409, 'ERROR: Duplicated nsir UUID'
     end
     return 200, instance.to_json
   end
 
-  # @method put_nsl-instances
-  # @overload put "/nsl-instances"
-  # Puts a nsl-instances record
-  put '/nsl-instances/:id' do
+  # @method put_ns-instances
+  # @overload put "/ns-instances"
+  # Puts a ns-instances record
+  put '/ns-instances/:id' do
     # Return if content-type is invalid
     415 unless request.content_type == 'application/json'
     # Validate JSON format
     instance, errors = parse_json(request.body.read)
     return 400, errors.to_json if errors
     # Retrieve stored version
-    new_nslr = instance
+    new_nsir = instance
     
     # Validation against schema
-    errors = validate_json(new_nslr, @@nslr_schema)
+    errors = validate_json(new_nsir, @@nsir_schema)
 
-    puts 'nslr: ', Nslr.to_json
+    puts 'nsir: ', Nsir.to_json
     return 422, errors.to_json if errors
 
     begin
-      nslr = Nslr.find_by('_id' => params[:id])
-      puts 'nslr is found'
+      nsir = Nsir.find_by('_id' => params[:id])
+      puts 'nsir is found'
     rescue Mongoid::Errors::DocumentNotFound => e
-      return 404, 'nslr not found'
+      return 404, 'nsir not found'
     end
 
     # Update to new version
     puts 'Updating...'
     begin
       # Delete old record
-      Nslr.where('_id' => params[:id]).delete
+      Nsir.where('_id' => params[:id]).delete
       # Create a record
-      new_nslr = Nslr.create!(instance)
+      new_nsir = Nsir.create!(instance)
     rescue Moped::Errors::OperationFailure => e
-      return 409, 'ERROR: Duplicated nslr UUID'
+      return 409, 'ERROR: Duplicated nsir UUID'
     end
 
-    nslr_json = new_nslr.to_json
-    return 200, nslr_json
+    nsir_json = new_nsir.to_json
+    return 200, nsir_json
   end
 
-  delete '/nsl-instances/:id' do
+  delete '/ns-instances/:id' do
     # Return if content-type is invalid
     begin
-      nslr = Nslr.find_by('_id' => params[:id])
-      puts 'nslr is found'
+      nsir = Nsir.find_by('_id' => params[:id])
+      puts 'nsir is found'
     rescue Mongoid::Errors::DocumentNotFound => e
-      return 404, 'nslr not found'
+      return 404, 'nsir not found'
     end
 
-    # Delete the nslr
+    # Delete the nsir
     puts 'Deleting...'
     begin
       # Delete the network service record
-      Nslr.where('_id' => params[:id]).delete
+      Nsir.where('_id' => params[:id]).delete
     end
 
     return 200

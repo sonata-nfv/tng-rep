@@ -52,10 +52,10 @@ module Mongoid
 end
 
 # This is the Class for Network Services Records
-class Nslr
+class Nsir
   include Mongoid::Document
   include Mongoid::Timestamps
   include Mongoid::Pagination
   include Mongoid::Attributes::Dynamic
-  store_in collection: 'nslr'
+  store_in collection: 'nsir'
 end

@@ -33,5 +33,5 @@
 require_relative 'sonata'
 require_relative 'vnf'
 require_relative 'ns'
-require_relative 'nsl'
+require_relative 'nsi'
 require_relative 'docs'

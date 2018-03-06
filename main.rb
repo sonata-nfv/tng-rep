@@ -183,7 +183,7 @@ class SonataNsRepository < Sinatra::Application
 end
 
 # Configurations for Slice Repository
-class SonataNslRepository < Sinatra::Application
+class SonataNsiRepository < Sinatra::Application
   register Sinatra::ConfigFile
   # Load configurations
   config_file 'config/config.yml'
