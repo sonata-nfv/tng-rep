@@ -129,7 +129,7 @@ class SonataVnfRepository < Sinatra::Application
     next_offset = offset + 1
     next_vnfs = Vnfr.paginate(page: next_offset, limit: limit)
     begin
-      link << '<localhost:4011/virtual-network-functions?offset=' + next_offset.to_s + '&limit=' + limit.to_s + '>; rel="next"' unless next_vnfs.empty?
+      link << '<localhost:4012/virtual-network-functions?offset=' + next_offset.to_s + '&limit=' + limit.to_s + '>; rel="next"' unless next_vnfs.empty?
     rescue
       logger.error 'Error Establishing a Database Connection'
     end
@@ -140,7 +140,7 @@ class SonataVnfRepository < Sinatra::Application
       previous_vnfs = Vnf.paginate(page: previous_offset, limit: limit)
       unless previous_vnfs.empty?
         link << ', ' unless next_vnfs.empty?
-        link << '<localhost:4011/virtual-network-functions?offset=' + previous_offset.to_s + '&limit=' + limit.to_s + '>; rel="last"'
+        link << '<localhost:4012/virtual-network-functions?offset=' + previous_offset.to_s + '&limit=' + limit.to_s + '>; rel="last"'
       end
     end
     link
@@ -153,7 +153,7 @@ class SonataVnfRepository < Sinatra::Application
     next_offset = offset + 1
     next_vnfs = Vnf.paginate(page: next_offset, limit: limit)
     begin
-      link << '<localhost:4011/virtual-network-functions/name/' + name.to_s + '?offset=' + next_offset.to_s + '&limit=' + limit.to_s + '>; rel="next"' unless next_vnfs.empty?
+      link << '<localhost:4012/virtual-network-functions/name/' + name.to_s + '?offset=' + next_offset.to_s + '&limit=' + limit.to_s + '>; rel="next"' unless next_vnfs.empty?
     rescue
       logger.error 'Error Establishing a Database Connection'
     end
@@ -164,7 +164,7 @@ class SonataVnfRepository < Sinatra::Application
       previous_vnfs = Vnf.paginate(page: previous_offset, limit: limit)
       unless previous_vnfs.empty?
         link << ', ' unless next_vnfs.empty?
-        link << '<localhost:4011/virtual-network-functions/name/' + name.to_s + '?offset=' + previous_offset.to_s + '&limit=' + limit.to_s + '>; rel="last"'
+        link << '<localhost:4012/virtual-network-functions/name/' + name.to_s + '?offset=' + previous_offset.to_s + '&limit=' + limit.to_s + '>; rel="last"'
       end
     end
     link

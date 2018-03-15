@@ -70,21 +70,21 @@ Method GET:
 To receive all instances you can use
 
 ```sh
- curl http://localhost:4011/records/nsr
+ curl http://localhost:4012/records/nsr
 ```
 
 ```sh
- curl http://localhost:4011/records/vnfr
+ curl http://localhost:4012/records/vnfr
 ```
 
 To receive an instance by its ID:
 
 ```sh
-curl -X GET http://localhost:4011/records/nsr/9f18bc1b-b18d-483b-88da-a600e9255868
+curl -X GET http://localhost:4012/records/nsr/9f18bc1b-b18d-483b-88da-a600e9255868
 ```
 
 ```sh
-curl -X GET http://localhost:4011/records/vnfr/9f18bc1b-b18d-483b-88da-a600e9255016
+curl -X GET http://localhost:4012/records/vnfr/9f18bc1b-b18d-483b-88da-a600e9255016
 ```
 
 Method POST:
@@ -92,11 +92,11 @@ Method POST:
 To send a record instance
 
 ```sh
-curl -X POST --data-binary @test_nsr.yaml -H "Content-type:application/x-yaml" http://localhost:4011/records/nsr
+curl -X POST --data-binary @test_nsr.yaml -H "Content-type:application/x-yaml" http://localhost:4012/records/nsr
 ```
 
 ```sh
-curl -X POST --data-binary @test_vnfr.yaml -H "Content-type:application/x-yaml" http://localhost:4011/records/vnfr
+curl -X POST --data-binary @test_vnfr.yaml -H "Content-type:application/x-yaml" http://localhost:4012/records/vnfr
 ```
 
 
@@ -104,7 +104,7 @@ curl -X POST --data-binary @test_vnfr.yaml -H "Content-type:application/x-yaml" 
 
 The API documentation is expected to be generated with Swagger soon. Further information can be found on 5GTANGO's wikipages link for 5GTANGO Catalogues:
 
-New API documentation in Swagger can be accessed from http://localhost:4011/api-doc while running the Catalogue server
+New API documentation in Swagger can be accessed from http://localhost:4012/api-doc while running the Catalogue server
 
 Currently, the API is documented with yardoc and can be built with a rake task:
 
