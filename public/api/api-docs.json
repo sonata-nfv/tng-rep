@@ -9,7 +9,7 @@
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
-  "host": "0.0.0.0:4011",
+  "host": "0.0.0.0:4012",
   "basePath": "/",
   "schemes": [
     "http"

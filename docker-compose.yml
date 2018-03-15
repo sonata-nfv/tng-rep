@@ -9,7 +9,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     ports:
-      - "4011:4011"
+      - "4012:4012"
     restart: always
     environment:
       - MAIN_DB=tng-repository
