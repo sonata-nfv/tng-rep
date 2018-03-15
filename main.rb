@@ -175,11 +175,10 @@ class SonataNsRepository < Sinatra::Application
   register Sinatra::ConfigFile
   # Load configurations
   config_file 'config/config.yml'
-  if ENV['SECOND_DB'].nil?
-    Mongoid.load!('config/mongoid.yml')
-  else
-    Mongoid.load!('config/mongoid.yml', :production_secondary)
-  end
+  Mongoid.load!('config/mongoid.yml')
+  before {
+    env['rack.logger'] = Logger.new "#{settings.root}/log/#{settings.environment}.log"
+  }
 end
 
 # Configurations for Slice Repository
@@ -187,11 +186,10 @@ class SonataNsiRepository < Sinatra::Application
   register Sinatra::ConfigFile
   # Load configurations
   config_file 'config/config.yml'
-  if ENV['SECOND_DB'].nil?
-    Mongoid.load!('config/mongoid.yml')
-  else
-    Mongoid.load!('config/mongoid.yml', :production_secondary)
-  end
+  Mongoid.load!('config/mongoid.yml')
+  before {
+    env['rack.logger'] = Logger.new "#{settings.root}/log/#{settings.environment}.log"
+  }
 end
 
 # Configurations for Functions Repository
@@ -199,20 +197,18 @@ class SonataVnfRepository < Sinatra::Application
   register Sinatra::ConfigFile
   # Load configurations
   config_file 'config/config.yml'
-  if ENV['SECOND_DB'].nil?
-    Mongoid.load!('config/mongoid.yml')
-  else
-    Mongoid.load!('config/mongoid.yml', :production_secondary)
-  end
+  Mongoid.load!('config/mongoid.yml')
+  before {
+     env['rack.logger'] = Logger.new "#{settings.root}/log/#{settings.environment}.log"
+  }
 end
 
 # Configurations for Catalogues
-class SonataCatalogue < Sinatra::Application
+class TangoVnVTrRepository < Sinatra::Application
   register Sinatra::ConfigFile
   # Load configurations
   config_file 'config/config.yml'
   Mongoid.load!('config/mongoid.yml')
-
   before {
     env['rack.logger'] = Logger.new "#{settings.root}/log/#{settings.environment}.log"
   }
