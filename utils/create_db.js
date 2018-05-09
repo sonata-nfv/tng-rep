@@ -48,4 +48,5 @@
 db = connect("mongo:27017/tng-repository");
 db.createCollection("nsd");
 db.createCollection("vnfd");
+db.createCollection("trr");
 
