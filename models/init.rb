@@ -33,4 +33,4 @@
 require_relative 'vnf'
 require_relative 'nsir'
 require_relative 'nsr'
-require_relative 'trr'
+require 'trr'
