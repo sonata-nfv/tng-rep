@@ -1,6 +1,5 @@
-{
-  "id": "33adeb1e-d981-16ec-dc44-e288e80067a1",  
-  "nsiId": "638ce734-5a37-4e5e-975a-20f6a1d23721",
+{ 
+  "nsiId": "33adeb1e-d981-16ec-dc44-e288e80067a1",
   "nsiName": "RMixed NSI 1",
   "nsiDescription": "Mixed NSI Descriptor 1",
   "nstId": "d53293e6-7b9a-407e-aa3a-f101b23541a8",
