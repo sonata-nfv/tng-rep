@@ -1,7 +1,8 @@
 { 
-  "nsiId": "33adeb1e-d981-16ec-dc44-e288e80067a1",
-  "nsiName": "RMixed NSI 1",
-  "nsiDescription": "Mixed NSI Descriptor 1",
+  "id": "33adeb1e-d981-16ec-dc44-e288e80067a1",
+  "name": "RMixed NSI 1",
+  "description": "Mixed NSI Descriptor 1",
+  "vendor":"vendor",
   "nstId": "d53293e6-7b9a-407e-aa3a-f101b23541a8",
   "nstInfoId": "More info about the nst.",
   "flavorId": "Flavour information 2.",
