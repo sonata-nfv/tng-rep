@@ -4,7 +4,6 @@
   "description": "Mixed NSI Descriptor 1",
   "vendor":"vendor",
   "nstId": "d53293e6-7b9a-407e-aa3a-f101b23541a8",
-  "netServInstance_Uuid": "d53293e6-7b9a-407e-aa3a-f101b2354111",
   "nstInfoId": "More info about the nst.",
   "flavorId": "Flavour information 2.",
   "sapInfo": "SAP information.",
@@ -13,7 +12,7 @@
   "terminateTime": "2018-04-25T10:11:32.626533",
   "scaleTime": "2018-04-24T10:11:33.626533",
   "updateTime": "2018-04-24T10:11:32.626533",
-  "ServiceInstancesUuid": [
+  "netServInstance_Uuid": [
     {
       "NSInstancesId": "3de19666-8471-4322-8bd9-2d2d28d86c80"
     },
