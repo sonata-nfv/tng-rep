@@ -114,10 +114,45 @@ class TangoVnVTrRepository < Sinatra::Application
         'purpose' => 'Store a new TRR'
       },
       {
-        'uri' => '/trr/test-plans',
+        'uri' => '/trr/test-plans/:id',
         'method' => 'DELETE',
         'purpose' => 'Delete a TRR'
+      },
+#
+#
+#test-suite-results interfaces list
+#
+#
+      {
+        'uri' => '/trr/test-suite-results',
+        'method' => 'GET',
+        'purpose' => 'List all TSR'
+      },
+      {
+        'uri' => '/trr/test-suite-results/:id',
+        'method' => 'GET',
+        'purpose' => 'List specific TSR'
+      },
+      {
+        'uri' => '/trr/test-suite-results',
+        'method' => 'POST',
+        'purpose' => 'Store a new TSR'
+      },
+      {
+        'uri' => '/trr/test-suite-results/:id',
+        'method' => 'PUT',
+        'purpose' => 'Store a new TSR'
+      },      
+      {
+        'uri' => '/trr/test-suite-results/:id',
+        'method' => 'DELETE',
+        'purpose' => 'Delete a TSR'
       }
+#
+#
+#end of test-suite-results interfaces list
+#
+#
     ]
   end
 end
