@@ -1,25 +1,20 @@
 {
-  "descriptor_version": "0.9",
-  "author": "Felipe Vicens (ATOS)",
-  "vendor": "eu.5gtango.slice-descriptor",
-  "name": "slice",
-  "version": "0.1",
-  "description": "Example Slice",
-  "id": "33adeb1e-d981-16ec-dc44-e288e80067a1",
-  "network_services": [
+  "description": "Rubik_descriptor",
+  "flavorId": "",
+  "id": "0ef2e8b7-886f-4dc2-8422-09b881bd802f",
+  "instantiateTime": "2018-05-10T16:15:20.306325",
+  "name": "Rubik_name",
+  "netServInstance_Uuid": [
     {
-      "ns_id": "ns_sonata",
-      "ns_vendor": "eu.5gtango.slice-descriptor",
-      "ns_name": "5gtango-demo",
-      "ns_version": "0.1",
-      "nsr_id": "00000000-0000-0000-0000-000000000000"
+      "NSInstancesId": "704f2d66-4e44-404d-ad7c-2c3d20348506"
     }
   ],
-  "qos": {
-    "5qi_value": "6",
-    "s_nssai": {
-      "sst": 1,
-      "sd": 1
-    }
-  }
+  "nsiState": "INSTANTIATED",
+  "nstId": "30ef541d-24ee-4ec3-8c00-f53b4a3791cb",
+  "nstInfoId": "",
+  "sapInfo": "",
+  "scaleTime": "",
+  "terminateTime": "",
+  "updateTime": "",
+  "vendor": "VENDOR"
 }
