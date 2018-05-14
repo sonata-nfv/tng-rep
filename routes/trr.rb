@@ -267,6 +267,7 @@ class TangoVnVTrRepository < Sinatra::Application
   # @overload post "/test-suite-results"
   # Post a new test-suite-results information
   post '/test-suite-results' do
+    content_type:json
     return 415 unless request.content_type == 'application/json'
     # Validate JSON format
     instance, errors = parse_json(request.body.read)
@@ -297,6 +298,7 @@ class TangoVnVTrRepository < Sinatra::Application
   # @overload put "/test-suite-results"
   # Puts a test-suite-results record
   put '/test-suite-results/:id' do
+    content_type:json
     # Return if content-type is invalid
     415 unless request.content_type == 'application/json'
     # Validate JSON format
