@@ -84,7 +84,8 @@ class TangoVnVTrRepository < Sinatra::Application
         headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
         return 200, trr_json
       elsif content_type == 'application/x-yaml'
-        headers 'Content-Type' => 'text/plain; charset=utf8'
+        #headers 'Content-Type' => 'text/plain; charset=utf8'
+        headers = { 'Accept' => 'application/x-yaml', 'Content-Type' => 'application/x-yaml' }
         trr_yml = json_to_yaml(trr_json)
         return 200, trr_yml
       end
