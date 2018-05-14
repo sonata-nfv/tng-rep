@@ -112,14 +112,14 @@ class TangoVnVTrRepository < Sinatra::Application
   post '/test-plans' do
     return 415 unless request.content_type == 'application/json'
     # Validate JSON format
-    instance, errors = parse_json(request.body.read)
+    #instance, errors = parse_json(request.body.read)
     trr_json = instance
     return 400, errors.to_json if errors
     # Validation against schema
-    errors = validate_json(trr_json, @@trr_schema)
+    #errors = validate_json(trr_json, @@trr_schema)
 
-    puts 'trr: ', Trr.to_json
-    return 422, errors.to_json if errors
+    #puts 'trr: ', Trr.to_json
+    #return 422, errors.to_json if errors
 
     begin
       instance = Trr.find({ '_id' => instance['_id'] })
@@ -265,13 +265,13 @@ class TangoVnVTrRepository < Sinatra::Application
     return 415 unless request.content_type == 'application/json'
     # Validate JSON format
     instance, errors = parse_json(request.body.read)
-    trr_json = instance
+    #trr_json = instance
     return 400, errors.to_json if errors
     # Validation against schema
-    errors = validate_json(trr_json, @@trr_schema)
+    #errors = validate_json(trr_json, @@trr_schema)
 
-    puts 'trr: ', Trr.to_json
-    return 422, errors.to_json if errors
+    #puts 'trr: ', Trr.to_json
+    #return 422, errors.to_json if errors
 
     begin
       instance = Trr.find({ '_id' => instance['_id'] })
