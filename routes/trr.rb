@@ -146,13 +146,13 @@ class TangoVnVTrRepository < Sinatra::Application
     instance, errors = parse_json(request.body.read)
     return 400, errors.to_json if errors
     # Retrieve stored version
-    new_trr = instance
+    #new_trr = instance
     
     # Validation against schema
-    errors = validate_json(new_trr, @@trr_schema)
+    #errors = validate_json(new_trr, @@trr_schema)
 
-    puts 'trr: ', Trr.to_json
-    return 422, errors.to_json if errors
+    #puts 'trr: ', Trr.to_json
+    #return 422, errors.to_json if errors
 
     begin
       trr = Trr.find_by('_id' => params[:id])
@@ -298,10 +298,10 @@ class TangoVnVTrRepository < Sinatra::Application
     instance, errors = parse_json(request.body.read)
     return 400, errors.to_json if errors
     # Retrieve stored version
-    new_trr = instance
+    #new_trr = instance
     
     # Validation against schema
-    errors = validate_json(new_trr, @@trr_schema)
+    #errors = validate_json(new_trr, @@trr_schema)
 
     puts 'trr: ', Trr.to_json
     return 422, errors.to_json if errors
