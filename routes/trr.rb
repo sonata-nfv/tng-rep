@@ -112,8 +112,8 @@ class TangoVnVTrRepository < Sinatra::Application
   post '/test-plans' do
     return 415 unless request.content_type == 'application/json'
     # Validate JSON format
-    #instance, errors = parse_json(request.body.read)
-    trr_json = instance
+    instance, errors = parse_json(request.body.read)
+    #trr_json = instance
     return 400, errors.to_json if errors
     # Validation against schema
     #errors = validate_json(trr_json, @@trr_schema)
