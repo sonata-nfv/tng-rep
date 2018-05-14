@@ -81,6 +81,7 @@ class TangoVnVTrRepository < Sinatra::Application
       # Get paginated list
       trr_json = @trr.to_json
       if content_type == 'application/json'
+        headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
         return 200, trr_json
       elsif content_type == 'application/x-yaml'
         headers 'Content-Type' => 'text/plain; charset=utf8'
@@ -233,6 +234,7 @@ class TangoVnVTrRepository < Sinatra::Application
       # Get paginated list
       trr_json = @trr.to_json
       if content_type == 'application/json'
+        headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
         return 200, trr_json
       elsif content_type == 'application/x-yaml'
         headers 'Content-Type' => 'text/plain; charset=utf8'
