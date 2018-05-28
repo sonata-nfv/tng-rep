@@ -195,14 +195,14 @@ class TangoVnVTrRepository < Sinatra::Application
     return 200
     # return 200, new_ns.to_json
   end
-#
-#
-#######################
-#test-suite-results API
-#######################
-#
-#
-# @method get_test-suite-results
+ #
+ #
+ ########################
+ # test-suite-results API
+ ########################
+ #
+ #
+ # @method get_test-suite-results
   # @overload get "/test-suite-results"
   # Gets all test-suite-results
   get '/test-suite-results' do
@@ -224,7 +224,7 @@ class TangoVnVTrRepository < Sinatra::Application
     logger.info "trr: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}"
     json_error 400, "trr: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
 
-    requests = Trr.paginate(page: params[:page], limit: params[:limit])
+    requests = Tsr.paginate(page: params[:page], limit: params[:limit])
     logger.info "trr: leaving GET /requests?#{uri.query} with #{requests.to_json}"
     halt 200, requests.to_json if requests
     json_error 404, 'trr: No requests were found'
@@ -250,7 +250,7 @@ class TangoVnVTrRepository < Sinatra::Application
   # Gets test-suite-results with an id
   get '/test-suite-results/:id' do
     begin
-      @nsinstance = Trr.find(params[:id])
+      @nsinstance = Tsr.find(params[:id])
     rescue Mongoid::Errors::DocumentNotFound => e
       halt(404)
     end
@@ -270,18 +270,18 @@ class TangoVnVTrRepository < Sinatra::Application
     # Validation against schema
     errors = validate_json(trr_json, @@trr_schema)
 
-    puts 'trr: ', Trr.to_json
+    puts 'trr: ', Tsr.to_json
     return 422, errors.to_json if errors
 
     begin
-      instance = Trr.find({ '_id' => instance['_id'] })
+      instance = Tsr.find({ '_id' => instance['_id'] })
       return 409, 'ERROR: Duplicated trr UUID'
     rescue Mongoid::Errors::DocumentNotFound => e
       # Continue
     end
 
     begin
-      instance = Trr.create!(instance)
+      instance = Tsr.create!(instance)
     rescue Moped::Errors::OperationFailure => e
       return 409, 'ERROR: Duplicated trr UUID'
     end
@@ -303,11 +303,11 @@ class TangoVnVTrRepository < Sinatra::Application
     # Validation against schema
     errors = validate_json(new_trr, @@trr_schema)
 
-    puts 'trr: ', Trr.to_json
+    puts 'trr: ', Tsr.to_json
     return 422, errors.to_json if errors
 
     begin
-      trr = Trr.find_by('_id' => params[:id])
+      trr = Tsr.find_by('_id' => params[:id])
       puts 'trr is found'
     rescue Mongoid::Errors::DocumentNotFound => e
       return 404, 'trr not found'
@@ -317,9 +317,9 @@ class TangoVnVTrRepository < Sinatra::Application
     puts 'Updating...'
     begin
       # Delete old record
-      Trr.where('_id' => params[:id]).delete
+      Tsr.where('_id' => params[:id]).delete
       # Create a record
-      new_trr = Trr.create!(instance)
+      new_trr = Tsr.create!(instance)
     rescue Moped::Errors::OperationFailure => e
       return 409, 'ERROR: Duplicated trr UUID'
     end
@@ -331,7 +331,7 @@ class TangoVnVTrRepository < Sinatra::Application
   delete '/test-suite-results/:id' do
     # Return if content-type is invalid
     begin
-      trr = Trr.find_by('_id' => params[:id])
+      trr = Tsr.find_by('_id' => params[:id])
       puts 'trr is found'
     rescue Mongoid::Errors::DocumentNotFound => e
       return 404, 'trr not found'
@@ -341,19 +341,10 @@ class TangoVnVTrRepository < Sinatra::Application
     puts 'Deleting...'
     begin
       # Delete the network service record
-      Trr.where('_id' => params[:id]).delete
+      Tsr.where('_id' => params[:id]).delete
     end
 
     return 200
     # return 200, new_ns.to_json
   end
-#
-#
-#
-#
-#
-#
-#
-#
-#
 end
