@@ -342,10 +342,8 @@ class TangoVnVTrRepository < Sinatra::Application
     rescue Mongoid::Errors::DocumentNotFound => e
       return 404, 'trr not found'
     end
-    <<<<<<< HEAD
     puts 'trr: ', Tsr.to_json
     return 422, errors.to_json if errors
-=======
     # Delete the test-suite-results
     puts 'Deleting...'
     begin
