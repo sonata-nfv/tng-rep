@@ -81,9 +81,11 @@ class TangoVnVTrRepository < Sinatra::Application
       # Get paginated list
       trr_json = @trr.to_json
       if content_type == 'application/json'
+        headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
         return 200, trr_json
       elsif content_type == 'application/x-yaml'
-        headers 'Content-Type' => 'text/plain; charset=utf8'
+        #headers 'Content-Type' => 'text/plain; charset=utf8'
+        headers = { 'Accept' => 'application/x-yaml', 'Content-Type' => 'application/x-yaml' }
         trr_yml = json_to_yaml(trr_json)
         return 200, trr_yml
       end
@@ -109,17 +111,18 @@ class TangoVnVTrRepository < Sinatra::Application
   # @method post_test-plans
   # @overload post "/test-plans"
   # Post a new test-plans information
-  post '/test-plans' do
+  post '/test-plans' do    
+    content_type:json
     return 415 unless request.content_type == 'application/json'
     # Validate JSON format
     instance, errors = parse_json(request.body.read)
-    trr_json = instance
+    #trr_json = instance
     return 400, errors.to_json if errors
     # Validation against schema
-    errors = validate_json(trr_json, @@trr_schema)
+    #errors = validate_json(trr_json, @@trr_schema)
 
-    puts 'trr: ', Trr.to_json
-    return 422, errors.to_json if errors
+    #puts 'trr: ', Trr.to_json
+    #return 422, errors.to_json if errors
 
     begin
       instance = Trr.find({ '_id' => instance['_id'] })
@@ -140,19 +143,20 @@ class TangoVnVTrRepository < Sinatra::Application
   # @overload put "/test-plans"
   # Puts a test-plans record
   put '/test-plans/:id' do
+    content_type:json
     # Return if content-type is invalid
     415 unless request.content_type == 'application/json'
     # Validate JSON format
     instance, errors = parse_json(request.body.read)
     return 400, errors.to_json if errors
     # Retrieve stored version
-    new_trr = instance
+    #new_trr = instance
     
     # Validation against schema
-    errors = validate_json(new_trr, @@trr_schema)
+    #errors = validate_json(new_trr, @@trr_schema)
 
-    puts 'trr: ', Trr.to_json
-    return 422, errors.to_json if errors
+    #puts 'trr: ', Trr.to_json
+    #return 422, errors.to_json if errors
 
     begin
       trr = Trr.find_by('_id' => params[:id])
@@ -233,6 +237,7 @@ class TangoVnVTrRepository < Sinatra::Application
       # Get paginated list
       trr_json = @trr.to_json
       if content_type == 'application/json'
+        headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
         return 200, trr_json
       elsif content_type == 'application/x-yaml'
         headers 'Content-Type' => 'text/plain; charset=utf8'
@@ -262,16 +267,16 @@ class TangoVnVTrRepository < Sinatra::Application
   # @overload post "/test-suite-results"
   # Post a new test-suite-results information
   post '/test-suite-results' do
+    content_type:json
     return 415 unless request.content_type == 'application/json'
     # Validate JSON format
     instance, errors = parse_json(request.body.read)
-    trr_json = instance
+    #trr_json = instance
     return 400, errors.to_json if errors
     # Validation against schema
-    errors = validate_json(trr_json, @@trr_schema)
-
-    puts 'trr: ', Tsr.to_json
-    return 422, errors.to_json if errors
+    #errors = validate_json(trr_json, @@trr_schema)
+    #puts 'trr: ', Tsr.to_json
+    #return 422, errors.to_json if errors
 
     begin
       instance = Tsr.find({ '_id' => instance['_id'] })
@@ -292,16 +297,17 @@ class TangoVnVTrRepository < Sinatra::Application
   # @overload put "/test-suite-results"
   # Puts a test-suite-results record
   put '/test-suite-results/:id' do
+    content_type:json
     # Return if content-type is invalid
     415 unless request.content_type == 'application/json'
     # Validate JSON format
     instance, errors = parse_json(request.body.read)
     return 400, errors.to_json if errors
     # Retrieve stored version
-    new_trr = instance
+    #new_trr = instance
     
     # Validation against schema
-    errors = validate_json(new_trr, @@trr_schema)
+    #errors = validate_json(new_trr, @@trr_schema)
 
     puts 'trr: ', Tsr.to_json
     return 422, errors.to_json if errors
@@ -336,7 +342,10 @@ class TangoVnVTrRepository < Sinatra::Application
     rescue Mongoid::Errors::DocumentNotFound => e
       return 404, 'trr not found'
     end
-
+    <<<<<<< HEAD
+    puts 'trr: ', Tsr.to_json
+    return 422, errors.to_json if errors
+=======
     # Delete the test-suite-results
     puts 'Deleting...'
     begin

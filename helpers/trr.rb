@@ -141,7 +141,7 @@ class TangoVnVTrRepository < Sinatra::Application
       {
         'uri' => '/trr/test-suite-results/:id',
         'method' => 'PUT',
-        'purpose' => 'Store a new TSR'
+        'purpose' => 'Update a new TSR'
       },      
       {
         'uri' => '/trr/test-suite-results/:id',
