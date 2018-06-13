@@ -86,8 +86,8 @@ pipeline {
 			branch 'master'
 		  }      
 		  steps {
-			sh 'docker tag registry.sonata-nfv.eu:5000/<container_name>:latest registry.sonata-nfv.eu:5000/<container_name>:int'
-			sh 'docker push registry.sonata-nfv.eu:5000/<container_name>:int'
+			sh 'docker tag registry.sonata-nfv.eu:5000/tng-rep:latest registry.sonata-nfv.eu:5000/tng-rep:int'
+			sh 'docker push registry.sonata-nfv.eu:5000/tng-rep:int'
 			sh 'rm -rf tng-devops || true'
 			sh 'git clone https://github.com/sonata-nfv/tng-devops.git'
 			dir(path: 'tng-devops') {
