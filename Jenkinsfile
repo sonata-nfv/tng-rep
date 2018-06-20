@@ -59,7 +59,8 @@ pipeline {
             sh 'rm -rf tng-devops || true'
             sh 'git clone https://github.com/sonata-nfv/tng-devops.git'
             dir(path: 'tng-devops') {
-              sh 'ansible-playbook roles/sp.yml -i environments -e "target=pre-int-sp"'
+              sh 'ansible-playbook roles/sp.yml -i environments -e "target=pre-int-sp component=repositories"'
+              sh 'ansible-playbook roles/vnv.yml -i environments -e "target=pre-int-vnv component=repositories"'
             }
           }
         }
@@ -86,12 +87,12 @@ pipeline {
 			branch 'master'
 		  }      
 		  steps {
-			sh 'docker tag registry.sonata-nfv.eu:5000/<container_name>:latest registry.sonata-nfv.eu:5000/<container_name>:int'
-			sh 'docker push registry.sonata-nfv.eu:5000/<container_name>:int'
+			sh 'docker tag registry.sonata-nfv.eu:5000/tng-rep:latest registry.sonata-nfv.eu:5000/tng-rep:int'
+			sh 'docker push registry.sonata-nfv.eu:5000/tng-rep:int'
 			sh 'rm -rf tng-devops || true'
 			sh 'git clone https://github.com/sonata-nfv/tng-devops.git'
 			dir(path: 'tng-devops') {
-			  sh 'ansible-playbook roles/sp.yml -i environments -e "target=int-sp"'
+			  sh 'ansible-playbook roles/sp.yml -i environments -e "target=int-sp component=repositories"'
 			}
 		  }
 		}
