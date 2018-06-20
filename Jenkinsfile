@@ -59,7 +59,8 @@ pipeline {
             sh 'rm -rf tng-devops || true'
             sh 'git clone https://github.com/sonata-nfv/tng-devops.git'
             dir(path: 'tng-devops') {
-              sh 'ansible-playbook roles/sp.yml -i environments -e "target=pre-int-sp component=tng-rep"'
+              sh 'ansible-playbook roles/sp.yml -i environments -e "target=pre-int-sp component=repositories"'
+              sh 'ansible-playbook roles/vnv.yml -i environments -e "target=pre-int-vnv component=repositories"'
             }
           }
         }
@@ -91,7 +92,7 @@ pipeline {
 			sh 'rm -rf tng-devops || true'
 			sh 'git clone https://github.com/sonata-nfv/tng-devops.git'
 			dir(path: 'tng-devops') {
-			  sh 'ansible-playbook roles/sp.yml -i environments -e "target=int-sp component=tng-rep"'
+			  sh 'ansible-playbook roles/sp.yml -i environments -e "target=int-sp component=repositories"'
 			}
 		  }
 		}
