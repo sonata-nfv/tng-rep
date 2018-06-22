@@ -36,7 +36,7 @@ require 'json'
 
 # This Class is the Class of Sonata Ns Repository
 class SonataNsRepository < Sinatra::Application
-  @@nsr_schema = JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/son-schema/master/service-record/nsr-schema.yml') { |f| f.read })))
+  @@nsr_schema = JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-record/nsr-schema.yml') { |f| f.read })))
   # https and openssl libs (require 'net/https' require 'openssl') enable access to external https links behind a proxy
 
   DEFAULT_OFFSET = '0'
@@ -45,20 +45,25 @@ class SonataNsRepository < Sinatra::Application
 
   # @method get_root
   # @overload get '/'
-  get '/' do
+   get '/doc' do
     headers 'Content-Type' => 'text/plain; charset=utf8'
     halt 200, interfaces_list.to_yaml
-  end
+   end
+
+   get '/ping' do
+    headers 'Content-Type' => 'text/plain; charset=utf8'
+    halt 200, 'pong'
+   end
 
   # @method get_ns-instances
   # @overload get "/ns-instances"
   # Gets all ns-instances
-  get '/ns-instances' do
+  get '/' do
     uri = Addressable::URI.new
     params['offset'] ||= DEFAULT_OFFSET
     params['limit'] ||= DEFAULT_LIMIT
     uri.query_values = params
-    logger.info "nsr: entered GET /records/nsr/ns-instances?#{uri.query}"
+    logger.info "nsr: entered GET /nsrs?#{uri.query}"
 
     # transform 'string' params Hash into keys
     keyed_params = keyed_hash(params)
@@ -93,10 +98,10 @@ class SonataNsRepository < Sinatra::Application
     end
   end
 
-  # @method get_ns-instances
-  # @overload get "/ns-instances"
-  # Gets ns-instances with an id
-  get '/ns-instances/:id' do
+  # @method get
+  # @overload get "/"
+  # Gets instances with an id
+  get '/:id' do
     begin
       @nsinstance = Nsr.find(params[:id])
     rescue Mongoid::Errors::DocumentNotFound => e
@@ -106,10 +111,10 @@ class SonataNsRepository < Sinatra::Application
     return 200, nsr_json
   end
 
-  # @method post_ns-instances
-  # @overload post "/ns-instances"
-  # Post a new ns-instances information
-  post '/ns-instances' do
+  # @method post
+  # @overload post "/"
+  # Post a new ns information
+  post '/' do
     return 415 unless request.content_type == 'application/json'
     # Validate JSON format
     instance, errors = parse_json(request.body.read)
@@ -136,10 +141,10 @@ class SonataNsRepository < Sinatra::Application
     return 200, instance.to_json
   end
 
-  # @method put_ns-instances
-  # @overload put "/ns-instances"
-  # Puts a ns-instances record
-  put '/ns-instances/:id' do
+  # @method put
+  # @overload put "/"
+  # Puts a ns record
+  put '/:id' do
     # Return if content-type is invalid
     415 unless request.content_type == 'application/json'
     # Validate JSON format
@@ -176,7 +181,7 @@ class SonataNsRepository < Sinatra::Application
     return 200, nsr_json
   end
 
-  delete '/ns-instances/:id' do
+  delete '/:id' do
     # Return if content-type is invalid
     begin
       nsr = Nsr.find_by('_id' => params[:id])
