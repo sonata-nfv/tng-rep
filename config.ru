@@ -33,8 +33,8 @@
 root = ::File.dirname(__FILE__)
 require ::File.join(root, 'main')
 
-map('/records/nsr') { run SonataNsRepository.new }
+map('/nsrs') { run SonataNsRepository.new }
 map('/records/nsir') { run SonataNsiRepository.new }
-map('/records/vnfr') { run SonataVnfRepository.new }
+map('/vnfrs') { run SonataVnfRepository.new }
 map('/trr') { run TangoVnVTrRepository.new }
 map('/') { run Sonata.new }

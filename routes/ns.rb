@@ -36,7 +36,7 @@ require 'json'
 
 # This Class is the Class of Sonata Ns Repository
 class SonataNsRepository < Sinatra::Application
-  @@nsr_schema = JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/son-schema/master/service-record/nsr-schema.yml') { |f| f.read })))
+  @@nsr_schema = JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-record/nsr-schema.yml') { |f| f.read })))
   # https and openssl libs (require 'net/https' require 'openssl') enable access to external https links behind a proxy
 
   DEFAULT_OFFSET = '0'
@@ -45,10 +45,10 @@ class SonataNsRepository < Sinatra::Application
 
   # @method get_root
   # @overload get '/'
-  get '/' do
-    headers 'Content-Type' => 'text/plain; charset=utf8'
-    halt 200, interfaces_list.to_yaml
-  end
+  # get '/' do
+  #  headers 'Content-Type' => 'text/plain; charset=utf8'
+  #  halt 200, interfaces_list.to_yaml
+  # end
 
   # @method get_ns-instances
   # @overload get "/ns-instances"
