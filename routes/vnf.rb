@@ -46,41 +46,22 @@ class SonataVnfRepository < Sinatra::Application
     #authorized?
   end
 
-  # @method get_root
-  # @overload get '/'
+  # @method get_doc
+  # @overload get '/doc'
   # Get all available interfaces
   # -> Get all interfaces
-  get '/' do
+  get '/doc' do
       headers 'Content-Type' => 'text/plain; charset=utf8'
     halt 200, interfaces_list.to_yaml
   end
 
-  # @method get_log
-  # @overload get '/vnf-instances/log'
-  #	Returns contents of log file
-  # Management method to get log file of repository remotely
-  get '/vnf-instances/log' do
-    filename = 'log/development.log'
-
-    # For testing purposes only
-    begin
-      txt = open(filename)
-
-    rescue => err
-      logger.error "Error reading log file: #{err}"
-      return 500, "Error reading log file: #{err}"
-    end
-
-    return 200, txt.read.to_s
-  end
-
   # @method get_vnfs
-  # @overload get '/vnf-instances'
+  # @overload get '/'
   #	Returns a list of VNFRs
   # List all VNFRs in JSON or YAML
   #   - JSON (default)
-  #   - YAML including output parameter (e.g /vnf-instances?output=YAML)
-  get '/vnf-instances' do
+  #   - YAML including output parameter (e.g /?output=YAML)
+  get '/' do
     params[:offset] ||= 1
     params[:limit] ||= 10
 
@@ -119,13 +100,13 @@ class SonataVnfRepository < Sinatra::Application
     end
   end
 
-  # @method get_vnf-instances
-  # @overload get "/vnf-instances"
-  # Gets vnf-instances with an id
+  # @method get
+  # @overload get "/"
+  # Gets vnf instances with an id
   # Return JSON or YAML
   #   - JSON (default)
-  #   - YAML including output parameter (e.g /vnf-instances?output=YAML)
-  get '/vnf-instances/:id' do
+  #   - YAML including output parameter (e.g /?output=YAML)
+  get '/:id' do
     begin
       @vnfInstance = Vnfr.find(params[:id])
     rescue Mongoid::Errors::DocumentNotFound => e
@@ -147,11 +128,10 @@ class SonataVnfRepository < Sinatra::Application
   end
 
   # @method post_vnfrs
-  # @overload post '/vnf-instances'
+  # @overload post '/'
   # Post a VNF in YAML format
-  # Post a vnfr
   # Return JSON or YAML depending on content_type
-  post '/vnf-instances' do
+  post '/' do
 
     if request.content_type ==  'application/json'
       instance, errors = parse_json(request.body.read)
@@ -193,11 +173,11 @@ class SonataVnfRepository < Sinatra::Application
   end
 
   # @method put_vnfrs
-  # @overload put '/vnf-instances'
+  # @overload put '/'
   # Put a VNF in YAML format
   # Put a vnfr
   # Return JSON or YAML depending on content_type
-  put '/vnf-instances/:id' do
+  put '/:id' do
 
     if request.content_type ==  'application/json'
       instance, errors = parse_json(request.body.read)
@@ -244,10 +224,10 @@ class SonataVnfRepository < Sinatra::Application
   end
 
   # @method delete_vnfr_external_vnf_id
-  # @overload delete '/vnf-instances/:id'
+  # @overload delete '/:id'
   #	Delete a vnf by its ID
   # Delete a vnf
-  delete '/vnf-instances/:id' do
+  delete '/:id' do
     begin
       vnf = Vnfr.find_by( {'id' =>  params[:id]})
     rescue Mongoid::Errors::DocumentNotFound => e
