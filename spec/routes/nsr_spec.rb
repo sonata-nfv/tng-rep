@@ -58,7 +58,7 @@ RSpec.describe SonataNsRepository do
     context 'with correct parameters' do
       it 'Submit an nsr' do
         headers = { 'CONTENT_TYPE' => 'application/json' }
-        post '/ns-instances', ns_instance_record, headers
+        post '/', ns_instance_record, headers
         expect(last_response).to be_ok
       end
     end
@@ -69,7 +69,7 @@ RSpec.describe SonataNsRepository do
     context 'Duplicated nsr' do
       it 'Submit a duplicated nsr' do
         headers = { 'CONTENT_TYPE' => 'application/json' }
-        post '/ns-instances', ns_instance_record, headers
+        post '/', ns_instance_record, headers
         expect(last_response.status).to eq(409)
       end
     end
@@ -81,7 +81,7 @@ RSpec.describe SonataNsRepository do
     context 'with incorrect parameters' do
       it 'Submit an invalid nsr' do
         headers = { 'CONTENT_TYPE' => 'application/json' }
-        post '/ns-instances', ns_instance_bad_record, headers
+        post '/', ns_instance_bad_record, headers
         expect(last_response.status).to eq(422)
       end
     end
@@ -90,7 +90,7 @@ RSpec.describe SonataNsRepository do
   describe 'GET /' do
     context 'without (UU)ID given' do
       before do
-        get '/ns-instances'
+        get '/'
       end
       subject { last_response }
       its(:status) { is_expected.to eq 200 }
