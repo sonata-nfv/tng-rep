@@ -258,10 +258,13 @@ class TangoVnVTrRepository < Sinatra::Application
     uri = Addressable::URI.new    
     params['page_number'] ||= DEFAULT_PAGE_NUMBER
     params['page_size'] ||= DEFAULT_PAGE_SIZE
+    uri.query_values = params  
     logger.info "trr: entered GET /test-suite-results?#{uri.query}"
 
-    headers[:params] = params unless params.empty?
+    # transform 'string' params Hash into keys
+    keyed_params = keyed_hash(params)
 
+    headers[:params] = params unless params.empty?
     # Get rid of :page_number and :page_size
     [:page_number, :page_size].each { |k| keyed_params.delete(k) }
 
