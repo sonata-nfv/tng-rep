@@ -255,6 +255,7 @@ class TangoVnVTrRepository < Sinatra::Application
   #	Returns a list of NSs
   # -> List many descriptors
   get '/test-suite-results/?' do
+    uri = Addressable::URI.new    
     params['page_number'] ||= DEFAULT_PAGE_NUMBER
     params['page_size'] ||= DEFAULT_PAGE_SIZE
     logger.info "trr: entered GET /test-suite-results?#{uri.query}"
