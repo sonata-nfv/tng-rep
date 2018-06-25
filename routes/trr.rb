@@ -282,7 +282,6 @@ class TangoVnVTrRepository < Sinatra::Application
       else
         logger.info "trr: leaving GET /test-suite-results?#{query_string} with 'No Test Suite Results were found'"
       end
-    end
 
     response = ''
     case request.content_type
