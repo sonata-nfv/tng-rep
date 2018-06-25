@@ -257,7 +257,7 @@ class TangoVnVTrRepository < Sinatra::Application
   get '/test-suite-results/?' do
     params['page_number'] ||= DEFAULT_PAGE_NUMBER
     params['page_size'] ||= DEFAULT_PAGE_SIZE
-    logger.info "trr: entered GET /test-suite-results?#{query_string}"
+    logger.info "trr: entered GET /test-suite-results?#{uri.query}"
 
     headers[:params] = params unless params.empty?
 
@@ -276,11 +276,11 @@ class TangoVnVTrRepository < Sinatra::Application
       headers 'Record-Count' => tsr.count.to_s
       logger.info "trr: Test Suite Results=#{tsr}"
       if tsr && tsr.size.to_i > 0
-        logger.info "trr: leaving GET /test-suite-results?#{query_string} with #{tsr}"
+        logger.info "trr: leaving GET /test-suite-results?#{uri.query} with #{tsr}"
         # Paginate results
         tsr = tsr.paginate(page_number: params[:page_number], page_size: params[:page_size])
       else
-        logger.info "trr: leaving GET /test-suite-results?#{query_string} with 'No Test Suite Results were found'"
+        logger.info "trr: leaving GET /test-suite-results?#{uri.query} with 'No Test Suite Results were found'"
       end
 
     response = ''
