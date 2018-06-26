@@ -11,7 +11,7 @@
 ## distributed under the License is distributed on an "AS IS" BASIS,
 ## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ## See the License for the specific language governing permissions and
-## limitations under the License.
+## page_sizeations under the License.
 ##
 ## Neither the name of the SONATA-NFV, 5GTANGO [, ANY ADDITIONAL AFFILIATION]
 ## nor the names of its contributors may be used to endorse or promote
@@ -39,8 +39,8 @@ class TangoVnVTrRepository < Sinatra::Application
   # @@trr_schema = JSON.parse(JSON.dump(YAML.load(open('') { |f| f.read })))
   # https and openssl libs (require 'net/https' require 'openssl') enable access to external https links behind a proxy
 
-  DEFAULT_OFFSET = '0'
-  DEFAULT_LIMIT = '10'
+  DEFAULT_PAGE_NUMBER = '0'
+  DEFAULT_PAGE_SIZE = '10'
   DEFAULT_MAX_LIMIT = '100'
 
   # @method get_root
@@ -55,8 +55,8 @@ class TangoVnVTrRepository < Sinatra::Application
   # Gets all test-plans
   get '/test-plans' do
     uri = Addressable::URI.new
-    params['offset'] ||= DEFAULT_OFFSET
-    params['limit'] ||= DEFAULT_LIMIT
+    params['page_number'] ||= DEFAULT_PAGE_NUMBER
+    params['page_size'] ||= DEFAULT_PAGE_SIZE
     uri.query_values = params
     logger.info "trr: entered GET /trr/test-plans?#{uri.query}"
 
@@ -66,13 +66,13 @@ class TangoVnVTrRepository < Sinatra::Application
     # Get paginated list
     headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
     headers[:params] = params unless params.empty?
-    # get rid of :offset and :limit
-    [:offset, :limit].each { |k| keyed_params.delete(k) }
+    # get rid of :page_number and :page_size
+    [:page_number, :page_size].each { |k| keyed_params.delete(k) }
     valid_fields = [:page]
     logger.info "trr: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}"
     json_error 400, "trr: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
 
-    requests = Trr.paginate(page: params[:page], limit: params[:limit])
+    requests = Trr.paginate(page: params[:page], page_size: params[:page_size])
     logger.info "trr: leaving GET /requests?#{uri.query} with #{requests.to_json}"
     halt 200, requests.to_json if requests
     json_error 404, 'trr: No requests were found'
@@ -211,8 +211,8 @@ class TangoVnVTrRepository < Sinatra::Application
   # Gets all test-suite-results
   get '/test-suite-results' do
     uri = Addressable::URI.new
-    params['offset'] ||= DEFAULT_OFFSET
-    params['limit'] ||= DEFAULT_LIMIT
+    params['page_number'] ||= DEFAULT_PAGE_NUMBER
+    params['page_size'] ||= DEFAULT_PAGE_SIZE
     uri.query_values = params
     logger.info "trr: entered GET /trr/test-suite-results?#{uri.query}"
 
@@ -222,13 +222,13 @@ class TangoVnVTrRepository < Sinatra::Application
     # Get paginated list
     headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
     headers[:params] = params unless params.empty?
-    # get rid of :offset and :limit
-    [:offset, :limit].each { |k| keyed_params.delete(k) }
+    # get rid of :page_number and :page_size
+    [:page_number, :page_size].each { |k| keyed_params.delete(k) }
     valid_fields = [:page]
     logger.info "trr: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}"
     json_error 400, "trr: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
 
-    requests = Tsr.paginate(page: params[:page], limit: params[:limit])
+    requests = Tsr.paginate(page: params[:page], page_size: params[:page_size])
     logger.info "trr: leaving GET /requests?#{uri.query} with #{requests.to_json}"
     halt 200, requests.to_json if requests
     json_error 404, 'trr: No requests were found'
@@ -248,6 +248,54 @@ class TangoVnVTrRepository < Sinatra::Application
       logger.error 'Error Establishing a Database Connection'
       return 500, 'Error Establishing a Database Connection'
     end
+  end
+
+  # @method get_test-suite-results
+  # @overload get '/test-suite-results/?'
+  #	Returns a list of NSs
+  # -> List many descriptors
+  get '/test-suite-results/?' do
+    uri = Addressable::URI.new    
+    params['page_number'] ||= DEFAULT_PAGE_NUMBER
+    params['page_size'] ||= DEFAULT_PAGE_SIZE
+    uri.query_values = params  
+    logger.info "trr: entered GET /test-suite-results?#{uri.query}"
+
+    # transform 'string' params Hash into keys
+    keyed_params = keyed_hash(params)
+
+    headers[:params] = params unless params.empty?
+    # Get rid of :page_number and :page_size
+    [:page_number, :page_size].each { |k| keyed_params.delete(k) }
+
+    # Validating URL Fields
+    valid_fields = [:page, :ns_uuid]
+    logger.info "trr: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}"
+    json_error 400, "trr: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
+
+      # Do the query
+      tsr = Tsr.where(keyed_params)
+      # Set total count for results
+      headers 'Record-Count' => tsr.count.to_s
+      logger.info "trr: Test Suite Results=#{tsr}"
+      if tsr && tsr.size.to_i > 0
+        logger.info "trr: leaving GET /test-suite-results?#{uri.query} with #{tsr}"
+        # Paginate results
+        tsr = tsr.paginate(page_number: params[:page_number], page_size: params[:page_size])
+      else
+        logger.info "trr: leaving GET /test-suite-results?#{uri.query} with 'No Test Suite Results were found'"
+      end
+
+    response = ''
+    case request.content_type
+      when 'application/json'
+        response = tsr.to_json
+      when 'application/x-yaml'
+        response = json_to_yaml(tsr.to_json)
+      else
+        halt 415
+    end
+    halt 200, {'Content-type' => request.content_type}, response
   end
 
   # @method get_test-suite-results
