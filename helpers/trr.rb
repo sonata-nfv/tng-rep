@@ -86,36 +86,6 @@ class TangoVnVTrRepository < Sinatra::Application
     nil
   end
 
-  # Transform the params for search into sequence of stored ids
-  # @param [Dict] params from CURL
-  # @param [Dict] keyed_params from CURL
-  # @param [Symbol] type_of_descriptor is valid symbol from the hosted type of descriptors
-  # @return [Object] keyed_params is dict with replaced the values of the inverted index
-  def parse_keys_dict(type_of_descriptor, keyed_params)
-    paths_dict =  parse_dict(type_of_descriptor)
-    cur_array_id = []
-    array_id = []
-    cur_bool = true
-    keyed_params.each do |key, value|
-      keys = key.to_s.split('.')[-1]
-      if paths_dict.key? keys.to_sym
-        keyed_params.delete((type_of_descriptor.to_s + '.' + keys).to_sym)
-        value.class == String ?
-            Dict.all.each {|field_of_dict| cur_array_id += field_of_dict[keys][value] unless field_of_dict[keys][value].empty?}:
-            Dict.all.each do |field_of_dict|
-              field_of_dict.as_document[keys].keys.each do |key_field_dict|
-                value.each {|key, value| cur_bool &= compare_objects(key.split('$')[-1], key_field_dict, value)}
-                cur_array_id += field_of_dict[keys][key_field_dict] if cur_bool
-                cur_bool = true
-              end
-            end
-      end
-      array_id = cur_array_id.select{ |e| cur_array_id.count(e) >= keyed_params.length }.uniq
-    end
-    keyed_params[:'_id'.in] = array_id unless array_id == 1 || array_id.empty?
-    keyed_params
-  end
-
   def keyed_hash(hash)
     Hash[hash.map { |(k, v)| [k.to_sym, v] }]
   end

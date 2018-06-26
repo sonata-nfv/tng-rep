@@ -274,7 +274,6 @@ class TangoVnVTrRepository < Sinatra::Application
     json_error 400, "trr: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
 
       # Do the query
-      keyed_params = parse_keys_dict(:ns_uuid, keyed_params)
       tsr = Tsr.where(keyed_params)
       # Set total count for results
       headers 'Record-Count' => tsr.count.to_s
