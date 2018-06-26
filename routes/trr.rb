@@ -223,12 +223,19 @@ class TangoVnVTrRepository < Sinatra::Application
     headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
     headers[:params] = params unless params.empty?
     # get rid of :offset and :limit
-    [:offset, :limit].each { |k| keyed_params.delete(k) }
+    [:offset, :limit, :ns_uuid, :test_uuid].each { |k| keyed_params.delete(k) }
     valid_fields = [:page]
     logger.info "trr: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}"
     json_error 400, "trr: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
 
-    requests = Tsr.paginate(page: params[:page], limit: params[:limit])
+    if params[:ns_uuid]
+#      request = Tsr.where(params[:ns_uuid])
+      requests = Tsr.paginate(page: params[:page], limit: params[:limit]).where("ns_uuid" => params[:ns_uuid])
+    elsif params[:test_uuid]
+      requests = Tsr.paginate(page: params[:page], limit: params[:limit]).where("test_uuid" => params[:test_uuid])
+    elsif
+      requests = Tsr.paginate(page: params[:page], limit: params[:limit])
+    end
     logger.info "trr: leaving GET /requests?#{uri.query} with #{requests.to_json}"
     halt 200, requests.to_json if requests
     json_error 404, 'trr: No requests were found'
