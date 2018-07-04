@@ -67,18 +67,18 @@ class SonataVnfRepository < Sinatra::Application
   #   - JSON (default)
   #   - YAML including output parameter (e.g /?output=YAML)
   get '/' do
-    params[:offset] ||= 1
-    params[:limit] ||= 10
+    params[:page_number] ||= 1
+    params[:page_size] ||= 10
 
     # Only accept positive numbers
-    params[:offset] = 1 if params[:offset].to_i < 1
-    params[:limit] = 2 if params[:limit].to_i < 1
+    params[:page_number] = 1 if params[:page_number].to_i < 1
+    params[:page_size] = 2 if params[:page_size].to_i < 1
 
     # Get paginated list
-    vnfs = Vnfr.paginate(page: params[:offset], limit: params[:limit])
+    vnfs = Vnfr.paginate(page: params[:page_number], page_size: params[:page_size])
     logger.debug(vnfs)
     # Build HTTP Link Header
-    headers['Link'] = build_http_link(params[:offset].to_i, params[:limit])
+    headers['Link'] = build_http_link(params[:page_number].to_i, params[:page_size])
 
     if params[:output] == 'YAML'
       content_type = 'application/x-yaml'
@@ -88,10 +88,10 @@ class SonataVnfRepository < Sinatra::Application
 
     begin
       # Get paginated list
-      vnfs = Vnfr.paginate(page: params[:offset], limit: params[:limit])
+      vnfs = Vnfr.paginate(page: params[:page_number], page_size: params[:page_size])
       logger.debug(vnfs)
       # Build HTTP Link Header
-      headers['Link'] = build_http_link(params[:offset].to_i, params[:limit])
+      headers['Link'] = build_http_link(params[:page_number].to_i, params[:page_size])
       vnfs_json = vnfs.to_json
       if content_type == 'application/json'
         return 200, vnfs_json

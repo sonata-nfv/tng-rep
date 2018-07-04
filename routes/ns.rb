@@ -39,9 +39,9 @@ class SonataNsRepository < Sinatra::Application
   @@nsr_schema = JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-record/nsr-schema.yml') { |f| f.read })))
   # https and openssl libs (require 'net/https' require 'openssl') enable access to external https links behind a proxy
 
-  DEFAULT_OFFSET = '0'
-  DEFAULT_LIMIT = '10'
-  DEFAULT_MAX_LIMIT = '100'
+  DEFAULT_PAGE_NUMBER = '0'
+  DEFAULT_PAGE_SIZE = '10'
+  DEFAULT_MAX_PAGE_SIZE = '100'
 
   # @method get_root
   # @overload get '/'
@@ -60,8 +60,8 @@ class SonataNsRepository < Sinatra::Application
   # Gets all ns-instances
   get '/' do
     uri = Addressable::URI.new
-    params['offset'] ||= DEFAULT_OFFSET
-    params['limit'] ||= DEFAULT_LIMIT
+    params['page_number'] ||= DEFAULT_PAGE_NUMBER
+    params['page_size'] ||= DEFAULT_PAGE_SIZE
     uri.query_values = params
     logger.info "nsr: entered GET /nsrs?#{uri.query}"
 
@@ -71,13 +71,13 @@ class SonataNsRepository < Sinatra::Application
     # Get paginated list
     headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
     headers[:params] = params unless params.empty?
-    # get rid of :offset and :limit
-    [:offset, :limit].each { |k| keyed_params.delete(k) }
+    # get rid of :page_number and :page_size
+    [:page_number, :page_size].each { |k| keyed_params.delete(k) }
     valid_fields = [:page]
     logger.info "nsr: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}"
     json_error 400, "nsr: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
 
-    requests = Nsr.paginate(page: params[:page], limit: params[:limit])
+    requests = Nsr.paginate(page: params[:page], page_size: params[:page_size])
     logger.info "nsr: leaving GET /requests?#{uri.query} with #{requests.to_json}"
     halt 200, requests.to_json if requests
     json_error 404, 'nsr: No requests were found'
