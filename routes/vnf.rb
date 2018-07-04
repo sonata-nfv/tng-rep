@@ -36,6 +36,10 @@ class SonataVnfRepository < Sinatra::Application
   @@vnfr_schema=JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/son-schema/master/function-record/vnfr-schema.yml'){|f| f.read})))
   # https and openssl libs (require 'net/https' require 'openssl') enable access to external https links behind a proxy
 
+  DEFAULT_PAGE_NUMBER = '0'
+  DEFAULT_PAGE_SIZE = '10'
+  DEFAULT_MAX_PAGE_SIZE = '100'
+
   before do
     # Gatekeepr authn. code will go here for future implementation
     # --> Gatekeeper authn. disabled
@@ -67,8 +71,8 @@ class SonataVnfRepository < Sinatra::Application
   #   - JSON (default)
   #   - YAML including output parameter (e.g /?output=YAML)
   get '/' do
-    params[:page_number] ||= 1
-    params[:page_size] ||= 10
+    params['page_number'] ||= DEFAULT_PAGE_NUMBER
+    params['page_size'] ||= DEFAULT_PAGE_SIZE
 
     # Only accept positive numbers
     params[:page_number] = 1 if params[:page_number].to_i < 1
