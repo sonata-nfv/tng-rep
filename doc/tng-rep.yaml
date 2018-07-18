@@ -368,6 +368,30 @@ paths:
               type: string
               maximum: 1
               minimum: 1
+        '400':
+          description: ERROR
+          headers:
+            Content-Type:
+              description: trr: wrong parameters.
+              type: string
+              maximum: 1
+              minimum: 1  
+        '404':
+          description: ERROR
+          headers:
+            Content-Type:
+              description: trr: No requests were found.
+              type: string
+              maximum: 1
+              minimum: 1 
+        '500':
+          description: ERROR
+          headers:
+            Content-Type:
+              description: Error Establishing a Database Connection.
+              type: string
+              maximum: 1
+              minimum: 1               
     post:
       tags:
       - "Test Results Repository"    
@@ -395,6 +419,30 @@ paths:
               type: string
               maximum: 1
               minimum: 1
+        '404':
+          description: Error
+          headers:
+            Content-Type:
+              description: DocumentNotFound.
+              type: string
+              maximum: 1
+              minimum: 1   
+        '415':
+          description: Error
+          headers:
+            Content-Type:
+              description: Error parsing Json.
+              type: string
+              maximum: 1
+              minimum: 1   
+        '409':
+          description: Error
+          headers:
+            Content-Type:
+              description: ERROR: Duplicated trr UUID.
+              type: string
+              maximum: 1
+              minimum: 1              
     put:
       tags:
       - "Test Results Repository"    
@@ -407,6 +455,30 @@ paths:
               type: string
               maximum: 1
               minimum: 1
+        '422':
+          description: Error
+          headers:
+            Content-Type:
+              description: Error parsing Json.
+              type: string
+              maximum: 1
+              minimum: 1  
+        '409':
+          description: Error
+          headers:
+            Content-Type:
+              description: ERROR: Duplicated trr UUID.
+              type: string
+              maximum: 1
+              minimum: 1
+        '404':
+          description: Error
+          headers:
+            Content-Type:
+              description: DocumentNotFound.
+              type: string
+              maximum: 1
+              minimum: 1               
 			  
     delete:
       tags:
@@ -420,6 +492,22 @@ paths:
               type: string
               maximum: 1
               minimum: 1	
+        '422':
+          description: Error
+          headers:
+            Content-Type:
+              description: Error parsing Json.
+              type: string
+              maximum: 1
+              minimum: 1  
+        '404':
+          description: Error
+          headers:
+            Content-Type:
+              description: DocumentNotFound.
+              type: string
+              maximum: 1
+              minimum: 1                
 
   /trr/test-suite-results:
     get:
@@ -434,6 +522,30 @@ paths:
               type: string
               maximum: 1
               minimum: 1
+        '400':
+          description: ERROR
+          headers:
+            Content-Type:
+              description: trr: wrong parameters.
+              type: string
+              maximum: 1
+              minimum: 1  
+        '404':
+          description: ERROR
+          headers:
+            Content-Type:
+              description: trr: No requests were found.
+              type: string
+              maximum: 1
+              minimum: 1 
+        '500':
+          description: ERROR
+          headers:
+            Content-Type:
+              description: Error Establishing a Database Connection.
+              type: string
+              maximum: 1
+              minimum: 1               
     post:
       tags:
       - "Test Results Repository"    
@@ -461,6 +573,30 @@ paths:
               type: string
               maximum: 1
               minimum: 1
+        '404':
+          description: Error
+          headers:
+            Content-Type:
+              description: DocumentNotFound.
+              type: string
+              maximum: 1
+              minimum: 1   
+        '415':
+          description: Error
+          headers:
+            Content-Type:
+              description: Error parsing Json.
+              type: string
+              maximum: 1
+              minimum: 1   
+        '409':
+          description: Error
+          headers:
+            Content-Type:
+              description: ERROR: Duplicated trr UUID.
+              type: string
+              maximum: 1
+              minimum: 1               
     put:
       tags:
       - "Test Results Repository"    
@@ -473,6 +609,31 @@ paths:
               type: string
               maximum: 1
               minimum: 1	
+        '422':
+          description: Error
+          headers:
+            Content-Type:
+              description: Error parsing Json.
+              type: string
+              maximum: 1
+              minimum: 1  
+        '409':
+          description: Error
+          headers:
+            Content-Type:
+              description: ERROR: Duplicated trr UUID.
+              type: string
+              maximum: 1
+              minimum: 1
+        '404':
+          description: Error
+          headers:
+            Content-Type:
+              description: DocumentNotFound.
+              type: string
+              maximum: 1
+              minimum: 1  
+              
     delete:
       tags:
       - "Test Results Repository"    
@@ -485,6 +646,14 @@ paths:
               type: string
               maximum: 1
               minimum: 1
+        '404':
+          description: Error
+          headers:
+            Content-Type:
+              description: ERROR: Operation failed.
+              type: string
+              maximum: 1
+              minimum: 1                  
 			  
   /trr/pings:
     get:
@@ -520,6 +689,14 @@ paths:
               type: string
               maximum: 1
               minimum: 1
+        '500':
+          description: Error
+          headers:
+            Content-Type:
+              description: Error Establishing a Database Connection.
+              type: string
+              maximum: 1
+              minimum: 1              
     post:
       tags:
       - "VNFs Repository"    
@@ -546,6 +723,31 @@ paths:
               type: string
               maximum: 1
               minimum: 1
+        '422':
+          description: Error
+          headers:
+            Content-Type:
+              description: Error parsing Json.
+              type: string
+              maximum: 1
+              minimum: 1  
+        '409':
+          description: Error
+          headers:
+            Content-Type:
+              description: ERROR: Duplicated trr UUID.
+              type: string
+              maximum: 1
+              minimum: 1
+        '404':
+          description: Error
+          headers:
+            Content-Type:
+              description: DocumentNotFound.
+              type: string
+              maximum: 1
+              minimum: 1                
+             
     put:
       tags:
       - "VNFs Repository"    
@@ -558,6 +760,30 @@ paths:
               type: string
               maximum: 1
               minimum: 1	
+        '422':
+          description: Error
+          headers:
+            Content-Type:
+              description: Error parsing Json.
+              type: string
+              maximum: 1
+              minimum: 1  
+        '409':
+          description: Error
+          headers:
+            Content-Type:
+              description: ERROR: Duplicated trr UUID.
+              type: string
+              maximum: 1
+              minimum: 1
+        '404':
+          description: Error
+          headers:
+            Content-Type:
+              description: DocumentNotFound.
+              type: string
+              maximum: 1
+              minimum: 1                  
     delete:
       tags:
       - "VNFs Repository"    
@@ -569,7 +795,15 @@ paths:
               description: Through this endpoint DELETE request, the uuid of the Records sent will be deleted.
               type: string
               maximum: 1
-              minimum: 1			  
+              minimum: 1		
+        '404':
+          description: Error
+          headers:
+            Content-Type:
+              description: ERROR: Operation failed.
+              type: string
+              maximum: 1
+              minimum: 1                  
 
   /vnfrs/pings:
     get:
