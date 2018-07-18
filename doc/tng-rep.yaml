@@ -372,7 +372,7 @@ paths:
           description: ERROR
           headers:
             Content-Type:
-              description: trr: wrong parameters.
+              description: Wrong parameter
               type: string
               maximum: 1
               minimum: 1  
@@ -380,7 +380,7 @@ paths:
           description: ERROR
           headers:
             Content-Type:
-              description: trr: No requests were found.
+              description: No requests were found.
               type: string
               maximum: 1
               minimum: 1 
@@ -439,7 +439,7 @@ paths:
           description: Error
           headers:
             Content-Type:
-              description: ERROR: Duplicated trr UUID.
+              description: Duplicated trr UUID.
               type: string
               maximum: 1
               minimum: 1              
@@ -467,7 +467,7 @@ paths:
           description: Error
           headers:
             Content-Type:
-              description: ERROR: Duplicated trr UUID.
+              description: Duplicated trr UUID.
               type: string
               maximum: 1
               minimum: 1
@@ -526,7 +526,7 @@ paths:
           description: ERROR
           headers:
             Content-Type:
-              description: trr: wrong parameters.
+              description: wrong parameters.
               type: string
               maximum: 1
               minimum: 1  
@@ -534,7 +534,7 @@ paths:
           description: ERROR
           headers:
             Content-Type:
-              description: trr: No requests were found.
+              description: No requests were found.
               type: string
               maximum: 1
               minimum: 1 
@@ -593,7 +593,7 @@ paths:
           description: Error
           headers:
             Content-Type:
-              description: ERROR: Duplicated trr UUID.
+              description: Duplicated trr UUID.
               type: string
               maximum: 1
               minimum: 1               
@@ -621,7 +621,7 @@ paths:
           description: Error
           headers:
             Content-Type:
-              description: ERROR: Duplicated trr UUID.
+              description: Duplicated trr UUID.
               type: string
               maximum: 1
               minimum: 1
@@ -650,7 +650,7 @@ paths:
           description: Error
           headers:
             Content-Type:
-              description: ERROR: Operation failed.
+              description: Operation failed.
               type: string
               maximum: 1
               minimum: 1                  
@@ -735,7 +735,7 @@ paths:
           description: Error
           headers:
             Content-Type:
-              description: ERROR: Duplicated trr UUID.
+              description: Duplicated trr UUID.
               type: string
               maximum: 1
               minimum: 1
@@ -772,7 +772,7 @@ paths:
           description: Error
           headers:
             Content-Type:
-              description: ERROR: Duplicated trr UUID.
+              description: Duplicated trr UUID.
               type: string
               maximum: 1
               minimum: 1
@@ -800,7 +800,7 @@ paths:
           description: Error
           headers:
             Content-Type:
-              description: ERROR: Operation failed.
+              description: Operation failed.
               type: string
               maximum: 1
               minimum: 1                  
