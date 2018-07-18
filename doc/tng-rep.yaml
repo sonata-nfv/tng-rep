@@ -1,0 +1,586 @@
+swagger: '2.0'
+info:
+  description: An H2020 5GTANGO project
+  version: 0.0.1
+  title: 5GTANGO REPOSITORY REST API
+  termsOfService: 'https://5gtango.eu/'
+  license:
+    name: H2020 5GTANGO Copyright
+    url: 'https://github.com/sonata-nfv/tng-sla-mgmt/blob/master/LICENSE'
+host: 'tng-rep:4012'
+basePath: /tng-rep
+tags:
+  - name: NS-Instances Repository
+    description: NS-Instances Repository APIs
+  - name: Network Slice Repository
+    description: Network Slice Repository APIs
+  - name: Test Results Repository
+    description: Test Results Repository APIs
+  - name: VNFs Repository
+    description: VNFs Repository APIs
+paths:
+
+  /nsrs/pings:
+    get:
+      tags:
+      - "NS-Instances Repository"     
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: test response
+              type: string
+              maximum: 1
+              minimum: 1
+  /nsrs:
+    get:
+      tags:
+      - "NS-Instances Repository"     
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: List all ns-instances
+              type: string
+              maximum: 1
+              minimum: 1
+        '404':
+          description: Error
+          headers:
+            Content-Type:
+              description: 'nsr: No requests were found'
+              type: string
+              maximum: 1
+              minimum: 1
+        '500':
+          description: Error
+          headers:
+            Content-Type:
+              description: Error Establishing a Database Connection
+              type: string
+              maximum: 1
+              minimum: 1
+			  
+    post:
+      tags:
+      - "NS-Instances Repository"     
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: upload a ns-instance
+              type: string
+              maximum: 1
+              minimum: 1     
+        '415':
+          description: Error
+          headers:
+            Content-Type:
+              description: invalid format
+              type: string
+              maximum: 1
+              minimum: 1                
+        '422':
+          description: Error
+          headers:
+            Content-Type:
+              description: error parsing json
+              type: string
+              maximum: 1
+              minimum: 1  
+        '409':
+          description: Error
+          headers:
+            Content-Type:
+              description: "ERROR: Duplicated nsr UUID"
+              type: string
+              maximum: 1
+              minimum: 1  			  
+
+  /nsir/id:
+    get:
+      tags:
+      - "NS-Instances Repository"     
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: get a ns-instance
+              type: string
+              maximum: 1
+              minimum: 1     
+        '415':
+          description: Error
+          headers:
+            Content-Type:
+              description: invalid format
+              type: string
+              maximum: 1
+              minimum: 1   
+            
+    put:
+      tags:
+      - "NS-Instances Repository"     
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: upload a ns-instance
+              type: string
+              maximum: 1
+              minimum: 1     
+        '415':
+          description: Error
+          headers:
+            Content-Type:
+              description: invalid format
+              type: string
+              maximum: 1
+              minimum: 1                
+        '422':
+          description: Error
+          headers:
+            Content-Type:
+              description: error parsing json
+              type: string
+              maximum: 1
+              minimum: 1  
+        '404':
+          description: Error
+          headers:
+            Content-Type:
+              description: "nsr not found"
+              type: string
+              maximum: 1
+              minimum: 1  
+    delete:
+      tags:
+      - "NS-Instances Repository"     
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: delete a ns-instance
+              type: string
+              maximum: 1
+              minimum: 1  			  
+
+############################
+############################
+####	Network Slice Repository		  
+			  
+			  
+			  
+  /ns-instances/:
+    get:
+      tags:
+      - "Network Slice Repository"    
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: List all interfaces
+              type: string
+              maximum: 1
+              minimum: 1
+  /ns-instances/pings:
+    get:
+      tags:
+      - "Network Slice Repository"     
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: test response
+              type: string
+              maximum: 1
+              minimum: 1
+  /ns-instances:
+    get:
+      tags:
+      - "Network Slice Repository"     
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: List all network slices instances
+              type: string
+              maximum: 1
+              minimum: 1
+        '400':
+          description: Error
+          headers:
+            Content-Type:
+              description: 'nsir: wrong parameters'
+              type: string
+              maximum: 1
+              minimum: 1			  
+        '404':
+          description: Error
+          headers:
+            Content-Type:
+              description: 'nsr: No requests were found'
+              type: string
+              maximum: 1
+              minimum: 1
+        '500':
+          description: Error
+          headers:
+            Content-Type:
+              description: Error Establishing a Database Connection
+              type: string
+              maximum: 1
+              minimum: 1
+    post:
+      tags:
+      - "Network Slice Repository"     
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: upload a ns-instance
+              type: string
+              maximum: 1
+              minimum: 1     
+        '415':
+          description: Error
+          headers:
+            Content-Type:
+              description: invalid format
+              type: string
+              maximum: 1
+              minimum: 1                
+        '422':
+          description: Error
+          headers:
+            Content-Type:
+              description: error parsing json
+              type: string
+              maximum: 1
+              minimum: 1  
+        '409':
+          description: Error
+          headers:
+            Content-Type:
+              description: "ERROR: Duplicated nsir UUID"
+              type: string
+              maximum: 1
+              minimum: 1                
+
+  /ns-instances/id:
+    get:
+      tags:
+      - "Network Slice Repository"     
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: get a ns-instance
+              type: string
+              maximum: 1
+              minimum: 1     
+        '415':
+          description: Error
+          headers:
+            Content-Type:
+              description: invalid format
+              type: string
+              maximum: 1
+              minimum: 1   
+    put:
+      tags:
+      - "Network Slice Repository"     
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: upload a ns-instance
+              type: string
+              maximum: 1
+              minimum: 1     
+        '415':
+          description: Error
+          headers:
+            Content-Type:
+              description: invalid format
+              type: string
+              maximum: 1
+              minimum: 1                
+        '422':
+          description: Error
+          headers:
+            Content-Type:
+              description: error parsing json
+              type: string
+              maximum: 1
+              minimum: 1  
+        '404':
+          description: Error
+          headers:
+            Content-Type:
+              description: "nsr not found"
+              type: string
+              maximum: 1
+              minimum: 1              
+    delete:
+      tags:
+      - "Network Slice Repository"     
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: delete a network slice-instance
+              type: string
+              maximum: 1
+              minimum: 1 			  
+
+
+
+############################
+############################
+####	Test Result Repository		  
+			  
+			  
+			  
+  /trr/test-plans:
+    get:
+      tags:
+      - "Test Results Repository"    
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: Through this endpoint GET request, the trr returns a JSON formatted paginated list of test-plans.
+              type: string
+              maximum: 1
+              minimum: 1
+    post:
+      tags:
+      - "Test Results Repository"    
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: Through this endpoint POST request, the trr store a JSON of a test-plans
+              type: string
+              maximum: 1
+              minimum: 1	
+
+
+  /trr/test-plans/test_plan_id:
+    get:
+      tags:
+      - "Test Results Repository"    
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: Through this endpoint GET request, the trr returns a JSON of a test-plan requested.
+              type: string
+              maximum: 1
+              minimum: 1
+    put:
+      tags:
+      - "Test Results Repository"    
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: Through this endpoint GET request, the plan-test sended as JSON will be updated.
+              type: string
+              maximum: 1
+              minimum: 1
+			  
+    delete:
+      tags:
+      - "Test Results Repository"    
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: Through this endpoint DELETE request, the uuid of the test-plan sent will be deleted.
+              type: string
+              maximum: 1
+              minimum: 1	
+
+  /trr/test-suite-results:
+    get:
+      tags:
+      - "Test Results Repository"    
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: Through this endpoint GET request, the trr returns a JSON formatted paginated list of test-suite-results.
+              type: string
+              maximum: 1
+              minimum: 1
+    post:
+      tags:
+      - "Test Results Repository"    
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: Through this endpoint POST request, the trr store a JSON of a test-suite-result.
+              type: string
+              maximum: 1
+              minimum: 1
+			  
+
+  /trr/test-suite-results/test-suite-results_id:
+    get:
+      tags:
+      - "Test Results Repository"    
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: Through this endpoint GET request, the trr returns a JSON of a test-suite-result requested.
+              type: string
+              maximum: 1
+              minimum: 1
+    put:
+      tags:
+      - "Test Results Repository"    
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: Through this endpoint GET request, the test-suite-result sended as JSON will be updated.
+              type: string
+              maximum: 1
+              minimum: 1	
+    delete:
+      tags:
+      - "Test Results Repository"    
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: Through this endpoint DELETE request, the uuid of the test-plan sent will be deleted.
+              type: string
+              maximum: 1
+              minimum: 1
+			  
+  /trr/pings:
+    get:
+      tags:
+      - "Test Results Repository"    
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: Through this endpoint GET request, the Records returns a plain text with the message pong and 200OK. It can be used as readiness probe.
+              type: string
+              maximum: 1
+              minimum: 1			  
+			  
+
+############################
+############################
+####	VNFs Repository	  
+			  
+			  
+			  
+  /vnfrs:
+    get:
+      tags:
+      - "VNFs Repository"    
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: Through this endpoint GET request, the Records returns a JSON formatted paginated list of VNF records.
+              type: string
+              maximum: 1
+              minimum: 1
+    post:
+      tags:
+      - "VNFs Repository"    
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: Through this endpoint POST request, the Records store a JSON of vnf record.
+              type: string
+              maximum: 1
+              minimum: 1	
+			  
+  /vnfrs/vnf_instance_id:
+    get:
+      tags:
+      - "VNFs Repository"    
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: Through this endpoint GET request, the Records returns a JSON of vnf record requested.
+              type: string
+              maximum: 1
+              minimum: 1
+    put:
+      tags:
+      - "VNFs Repository"    
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: Through this endpoint PUT request, the Records sent as JSON of vnf record will be updated.
+              type: string
+              maximum: 1
+              minimum: 1	
+    delete:
+      tags:
+      - "VNFs Repository"    
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: Through this endpoint DELETE request, the uuid of the Records sent will be deleted.
+              type: string
+              maximum: 1
+              minimum: 1			  
+
+  /vnfrs/pings:
+    get:
+      tags:
+      - "VNFs Repository"    
+      responses:
+        '200':
+          description: Success
+          headers:
+            Content-Type:
+              description: Through this endpoint GET request, the Records returns a plain text with the message poing and 200OK. It can be used as readiness probe.
+              type: string
+              maximum: 1
+              minimum: 1			  
