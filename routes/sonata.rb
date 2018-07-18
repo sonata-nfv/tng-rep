@@ -58,6 +58,11 @@ class Sonata < Sinatra::Application
   # Get all available interfaces
   # -> Get all interfaces
 
+   get '/pings' do
+    headers 'Content-Type' => 'text/plain; charset=utf8'
+    halt 200, 'pong'
+   end
+
   get '/' do
     headers 'Content-Type' => 'text/plain; charset=utf8'
     halt 200, api_routes.to_yaml
