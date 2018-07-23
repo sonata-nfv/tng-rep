@@ -1,5 +1,7 @@
 [![Build Status](http://jenkins.sonata-nfv.eu/buildStatus/icon?job=tng-rep)](http://jenkins.sonata-nfv.eu/job/tng-rep)
 
+<p align="center"><img src="https://github.com/sonata-nfv/tng-api-gtw/wiki/images/sonata-5gtango-logo-500px.png" /></p>
+
 # 5GTANGO Repositories
 This repository contains the development for the [5GTANGO](http://www.5gtango.eu) 's Service Platform Repositories. It holds the API implementation for the Service Platform Repositories component.
 
