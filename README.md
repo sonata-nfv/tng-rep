@@ -1,5 +1,7 @@
 [![Build Status](http://jenkins.sonata-nfv.eu/buildStatus/icon?job=tng-rep)](http://jenkins.sonata-nfv.eu/job/tng-rep)
 
+<p align="center"><img src="https://github.com/sonata-nfv/tng-api-gtw/wiki/images/sonata-5gtango-logo-500px.png" /></p>
+
 # 5GTANGO Repositories
 This repository contains the development for the [5GTANGO](http://www.5gtango.eu) 's Service Platform Repositories. It holds the API implementation for the Service Platform Repositories component.
 
@@ -102,24 +104,9 @@ curl -X POST --data-binary @test_vnfr.yaml -H "Content-type:application/x-yaml" 
 
 ### API Documentation
 
-The API documentation is expected to be generated with Swagger soon. Further information can be found on 5GTANGO's wikipages link for 5GTANGO Catalogues:
+API documentation in Swagger can be accessed from https://raw.githubusercontent.com/sonata-nfv/tng-rep/master/doc/tng-rep.yaml
 
-New API documentation in Swagger can be accessed from http://localhost:4012/api-doc while running the Catalogue server
-
-Currently, the API is documented with yardoc and can be built with a rake task:
-
-```sh
-rake yard
-```
-
-From here you can use the yard server to browse the docs from the source root:
-
-```sh
-yard server
-```
-
-And they can be viewed from http://localhost:8808/
-or you can use docker-compose and view from http://localhost:8808/
+Also you can see all the 5GTANGO API's documentation here: https://sonata-nfv.github.io/tng-doc/
 
 ## License
 

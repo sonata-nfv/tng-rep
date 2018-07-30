@@ -50,6 +50,11 @@ class SonataNsiRepository < Sinatra::Application
     halt 200, interfaces_list.to_yaml
   end
 
+   get '/pings' do
+    headers 'Content-Type' => 'text/plain; charset=utf8'
+    halt 200, 'pong'
+   end
+
   # @method get_ns-instances
   # @overload get "/ns-instances"
   # Gets all ns-instances
