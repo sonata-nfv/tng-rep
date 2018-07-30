@@ -10,7 +10,7 @@ pipeline {
         }
         stage('Building tng-rep') {
           steps {
-            sh 'docker build -t registry.sonata-nfv.eu:5000/tng-rep .'
+            sh 'docker build -t registry.sonata-nfv.eu:5000/tng-rep:v4.0 .'
           }
         }
       }
@@ -27,7 +27,7 @@ pipeline {
             sh 'if ! [[ "$(docker inspect -f {{.State.Running}} mongo 2> /dev/null)" == "" ]]; then docker rm -fv mongo ; fi || true'
             sh 'docker run -p 27017:27017 -d --net tango --network-alias mongo --name mongo mongo'
             sh 'sleep 10'
-            sh 'docker run --rm=true --net tango --network-alias tng-rep -e RACK_ENV=test -v "$(pwd)/spec/reports:/app/spec/reports" registry.sonata-nfv.eu:5000/tng-rep rake ci:all'
+            sh 'docker run --rm=true --net tango --network-alias tng-rep -e RACK_ENV=test -v "$(pwd)/spec/reports:/app/spec/reports" registry.sonata-nfv.eu:5000/tng-rep:v4.0 rake ci:all'
             sh 'if ! [[ "$(docker inspect -f {{.State.Running}} mongo 2> /dev/null)" == "" ]]; then docker rm -fv mongo ; fi || true'
           }
         }
@@ -42,7 +42,7 @@ pipeline {
         }
         stage('Publishing tng-rep') {
           steps {
-            sh 'docker push registry.sonata-nfv.eu:5000/tng-rep'
+            sh 'docker push registry.sonata-nfv.eu:5000/tng-rep:v4.0'
           }
         }
       }
@@ -59,45 +59,12 @@ pipeline {
             sh 'rm -rf tng-devops || true'
             sh 'git clone https://github.com/sonata-nfv/tng-devops.git'
             dir(path: 'tng-devops') {
-              sh 'ansible-playbook roles/sp.yml -i environments -e "target=pre-int-sp component=repositories"'
-              sh 'ansible-playbook roles/vnv.yml -i environments -e "target=pre-int-vnv component=repositories"'
+              sh 'ansible-playbook roles/sp.yml -i environments -e "target=sta-sp-v4.0 component=repositories"'
+              sh 'ansible-playbook roles/vnv.yml -i environments -e "target=sta-vnv-v4.0 component=repositories"'
             }
           }
         }
       }
-    }
-    stage('Promoting containers to integration env') {
-      when {
-         branch 'master'
-      }
-      parallel {
-        stage('Publishing containers to int') {
-          steps {
-            echo 'Promoting containers to integration'
-          }
-        }
-        stage('tng-rep') {
-          steps {
-            sh 'docker tag registry.sonata-nfv.eu:5000/tng-rep:latest registry.sonata-nfv.eu:5000/tng-rep:int'
-            sh 'docker push  registry.sonata-nfv.eu:5000/tng-rep:int'
-          }
-        }
-	   stage('Promoting to integration') {
-		  when{
-			branch 'master'
-		  }      
-		  steps {
-			sh 'docker tag registry.sonata-nfv.eu:5000/tng-rep:latest registry.sonata-nfv.eu:5000/tng-rep:int'
-			sh 'docker push registry.sonata-nfv.eu:5000/tng-rep:int'
-			sh 'rm -rf tng-devops || true'
-			sh 'git clone https://github.com/sonata-nfv/tng-devops.git'
-			dir(path: 'tng-devops') {
-			  sh 'ansible-playbook roles/sp.yml -i environments -e "target=int-sp component=repositories"'
-			}
-		  }
-		}
-		
-      }        
     }
     stage('Publish results') {
       steps {
