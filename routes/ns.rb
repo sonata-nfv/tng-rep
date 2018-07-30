@@ -73,11 +73,11 @@ class SonataNsRepository < Sinatra::Application
     headers[:params] = params unless params.empty?
     # get rid of :page_number and :page_size
     [:page_number, :page_size].each { |k| keyed_params.delete(k) }
-    valid_fields = [:page]
+    valid_fields = [:page_number, :page_size]
     logger.info "nsr: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}"
     json_error 400, "nsr: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
 
-    requests = Nsr.paginate(page: params[:page], page_size: params[:page_size])
+    requests = Nsr.paginate(page_number: params[:page_number], page_size: params[:page_size])
     logger.info "nsr: leaving GET /requests?#{uri.query} with #{requests.to_json}"
     halt 200, requests.to_json if requests
     json_error 404, 'nsr: No requests were found'

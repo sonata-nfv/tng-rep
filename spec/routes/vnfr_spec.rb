@@ -53,11 +53,11 @@ RSpec.describe SonataVnfRepository do
     its(:status) { is_expected.to eq 200 }
   end
 
-  describe 'GET \'/ping\'' do
+  describe 'GET \'/pings\'' do
     before do
       stub_request(:get, 'localhost:5000').to_return(status: 200,
                                                      body: 'pong\n')
-      get '/ping'
+      get '/pings'
     end
     subject { last_response }
     its(:status) { is_expected.to eq 200 }
