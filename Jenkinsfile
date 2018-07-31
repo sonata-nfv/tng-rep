@@ -10,7 +10,7 @@ pipeline {
         }
         stage('Building tng-rep') {
           steps {
-            sh 'docker build -t registry.sonata-nfv.eu:5000/tng-rep .'
+            sh 'docker build -t registry.sonata-nfv.eu:5000/tng-rep:v4.0 .'
           }
         }
       }
@@ -42,7 +42,7 @@ pipeline {
         }
         stage('Publishing tng-rep') {
           steps {
-            sh 'docker push registry.sonata-nfv.eu:5000/tng-rep'
+            sh 'docker push registry.sonata-nfv.eu:5000/tng-rep:v4.0'
           }
         }
       }
@@ -59,8 +59,8 @@ pipeline {
             sh 'rm -rf tng-devops || true'
             sh 'git clone https://github.com/sonata-nfv/tng-devops.git'
             dir(path: 'tng-devops') {
-              sh 'ansible-playbook roles/sp.yml -i environments -e "target=pre-int-sp component=repositories"'
-              sh 'ansible-playbook roles/vnv.yml -i environments -e "target=pre-int-vnv component=repositories"'
+              sh 'ansible-playbook roles/sp.yml -i environments -e "target=sta-sp-v4.0  component=repositories"'
+              sh 'ansible-playbook roles/vnv.yml -i environments -e "target=sta-vnv-v4.0  component=repositories"'
             }
           }
         }
@@ -78,8 +78,8 @@ pipeline {
         }
         stage('tng-rep') {
           steps {
-            sh 'docker tag registry.sonata-nfv.eu:5000/tng-rep:latest registry.sonata-nfv.eu:5000/tng-rep:int'
-            sh 'docker push  registry.sonata-nfv.eu:5000/tng-rep:int'
+            sh 'docker tag registry.sonata-nfv.eu:5000/tng-rep:v4.0 registry.sonata-nfv.eu:5000/tng-rep:v4.0'
+            sh 'docker push  registry.sonata-nfv.eu:5000/tng-rep:v4.0'
           }
         }
 	   stage('Promoting to integration') {
@@ -87,12 +87,12 @@ pipeline {
 			branch 'master'
 		  }      
 		  steps {
-			sh 'docker tag registry.sonata-nfv.eu:5000/tng-rep:latest registry.sonata-nfv.eu:5000/tng-rep:int'
-			sh 'docker push registry.sonata-nfv.eu:5000/tng-rep:int'
+			sh 'docker tag registry.sonata-nfv.eu:5000/tng-rep:v4.0 registry.sonata-nfv.eu:5000/tng-rep:v4.0'
+			sh 'docker push registry.sonata-nfv.eu:5000/tng-rep:v4.0'
 			sh 'rm -rf tng-devops || true'
 			sh 'git clone https://github.com/sonata-nfv/tng-devops.git'
 			dir(path: 'tng-devops') {
-			  sh 'ansible-playbook roles/sp.yml -i environments -e "target=int-sp component=repositories"'
+			  sh 'ansible-playbook roles/sp.yml -i environments -e "target=sta-sp-v4.0  component=repositories"'
 			}
 		  }
 		}
