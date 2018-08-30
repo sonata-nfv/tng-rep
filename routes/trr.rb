@@ -365,4 +365,17 @@ class TangoVnVTrRepository < Sinatra::Application
     return 200
     # return 200, new_ns.to_json
   end
+  
+  # @method get_test-suite-results
+  # @overload get "/test-suite-results"
+  # Gets test-suite-results counter with an id
+  get '/test-suite-results/counter/:id' do
+    begin
+      @nsinstance = Tsr.find(params[:id]).count
+    rescue Mongoid::Errors::DocumentNotFound => e
+      halt(404)
+    end
+    trr_json = @nsinstance.to_json
+    return 200, "test_uuid_count: " trr_json 
+  end
 end
