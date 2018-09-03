@@ -241,7 +241,11 @@ class TangoVnVTrRepository < Sinatra::Application
       requests = Tsr.paginate(page_number: params[:page_number], page_size: params[:page_size])
     end
     logger.info "trr: leaving GET /requests?#{uri.query} with #{requests.to_json}"
-    halt 200, requests.to_json if requests
+
+    fields = ['created_at', 'instance_uuid', 'package_id', 'service_uuid', 'status', 'test_plan_id', 'test_uuid', 'tester_result_text', 'updated_at', 'uuid']
+    halt 200, requests.to_json(:only => fields) if requests
+    
+#    halt 200, requests.to_json if requests
     json_error 404, 'trr: No requests were found'
 
     begin
@@ -264,6 +268,7 @@ class TangoVnVTrRepository < Sinatra::Application
   # @method get_test-suite-results
   # @overload get "/test-suite-results"
   # Gets test-suite-results with an id
+  
   get '/test-suite-results/:id' do
     begin
       @nsinstance = Tsr.find(params[:id])
@@ -273,6 +278,7 @@ class TangoVnVTrRepository < Sinatra::Application
     trr_json = @nsinstance.to_json
     return 200, trr_json
   end
+
 
   # @method post_test-suite-results
   # @overload post "/test-suite-results"
@@ -364,5 +370,18 @@ class TangoVnVTrRepository < Sinatra::Application
 
     return 200
     # return 200, new_ns.to_json
+  end
+  
+  # @method get_test-suite-results
+  # @overload get "/test-suite-results"
+  # Gets test-suite-results counter with an id
+  get '/test-suite-results/counter/:test_uuid' do
+    begin
+      requests = Tsr.where("test_uuid" => params[:test_uuid]).count()
+      halt 200, requests.to_json if requests
+      json_error 404, 'trr: No requests were found'
+    rescue Mongoid::Errors::DocumentNotFound => e
+      halt(404)
+    end
   end
 end
