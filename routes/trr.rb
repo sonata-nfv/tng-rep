@@ -369,7 +369,7 @@ class TangoVnVTrRepository < Sinatra::Application
   # @method get_test-suite-results
   # @overload get "/test-suite-results"
   # Gets test-suite-results counter with an id
-    get '/test-suite-results/:test_id' do
+  get '/test-suite-results/:test_id' do
     begin
       @nsinstance = Tsr.find(params[:test_id])
     rescue Mongoid::Errors::DocumentNotFound => e
