@@ -245,7 +245,7 @@ class TangoVnVTrRepository < Sinatra::Application
     fields = ['created_at', 'instance_uuid', 'package_id', 'service_uuid', 'status', 'test_plan_id', 'test_uuid', 'tester_result_text', 'updated_at', 'uuid']
     halt 200, requests.to_json(:only => fields) if requests
     
-    # halt 200, requests.to_json if requests
+#    halt 200, requests.to_json if requests
     json_error 404, 'trr: No requests were found'
 
     begin
@@ -268,18 +268,17 @@ class TangoVnVTrRepository < Sinatra::Application
   # @method get_test-suite-results
   # @overload get "/test-suite-results"
   # Gets test-suite-results with an id
+  
   get '/test-suite-results/:id' do
     begin
       @nsinstance = Tsr.find(params[:id])
     rescue Mongoid::Errors::DocumentNotFound => e
       halt(404)
-    end    
+    end
     trr_json = @nsinstance.to_json
-#    fields = ['created_at', 'instance_uuid', 'package_id', 'service_uuid', 'status', 'test_plan_id', 'test_uuid', 'tester_result_text', 'updated_at', 'uuid']
-#    trr_json = @nsinstance.to_json(:only => fields) 
-    
     return 200, trr_json
   end
+
 
   # @method post_test-suite-results
   # @overload post "/test-suite-results"
