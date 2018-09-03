@@ -269,8 +269,11 @@ class TangoVnVTrRepository < Sinatra::Application
       @nsinstance = Tsr.find(params[:id])
     rescue Mongoid::Errors::DocumentNotFound => e
       halt(404)
-    end
-    trr_json = @nsinstance.to_json
+    end    
+#    trr_json = @nsinstance.to_json
+    fields = ['created_at', 'instance_uuid', 'package_id', 'service_uuid', 'status', 'test_plan_id', 'test_uuid', 'tester_result_text', 'updated_at', 'uuid']
+    trr_json = @nsinstance.to_json(:only => fields) 
+    
     return 200, trr_json
   end
 
