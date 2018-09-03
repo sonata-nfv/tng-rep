@@ -376,6 +376,6 @@ class TangoVnVTrRepository < Sinatra::Application
       halt(404)
     end
     trr_json = @nsinstance.to_json
-    return 200, "test_uuid_count: " trr_json 
+    return 200, trr_json
   end
 end
