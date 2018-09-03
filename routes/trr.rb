@@ -369,20 +369,20 @@ class TangoVnVTrRepository < Sinatra::Application
   # @method get_test-suite-results
   # @overload get "/test-suite-results"
   # Gets test-suite-results counter with an id
-  get '/test-suite-results/:test_id' do
+  get '/test-suite-results/:test_uuid' do
     begin
-      @nsinstance = Tsr.find(params[:test_id])
+      @nsinstance = Tsr.find(params[:test_uuid])
     rescue Mongoid::Errors::DocumentNotFound => e
       halt(404)
     end
     trr_json = @nsinstance.to_json
     return 200, trr_json
   end
+
   
-  
-  get '/test-suite-results/counter/:test_id' do
+  get '/test-suite-results/counter/:test_uuid' do
     begin
-      @nsinstance = Tsr.find(params[:test_id]).count
+      @nsinstance = Tsr.find(params[:test_uuid]).count
     rescue Mongoid::Errors::DocumentNotFound => e
       halt(404)
     end
