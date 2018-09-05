@@ -170,6 +170,10 @@ class SonataVnfRepository < Sinatra::Application
     link
   end
 
+  def keyed_hash(hash)
+    Hash[hash.map { |(k, v)| [k.to_sym, v] }]
+  end
+
   def interfaces_list
     [
         {

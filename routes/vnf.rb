@@ -98,7 +98,8 @@ class SonataVnfRepository < Sinatra::Application
       vnfs = Vnfr.paginate(page: params[:page_number], page_size: params[:page_size]).where("descriptor_reference" => params[:descriptor_reference])
     else
       vnfs = Vnfr.paginate(page: params[:page_number], page_size: params[:page_size])
-    logger.info "vnfs: leaving GET /vnfrs?#{uri.query} with #{requests.to_json}"
+    end
+    logger.info "vnfs: leaving GET /vnfrs?#{uri.query} with #{vnfs.to_json}"
     halt 200, vnfs.to_json if vnfs
     json_error 404, 'vnfs: No vnfrs were found'
 
