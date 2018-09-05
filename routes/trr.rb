@@ -391,4 +391,31 @@ class TangoVnVTrRepository < Sinatra::Application
   end
 
 
+  get '/test-suite-results/last-time-executed/:test_uuid' do
+    begin      
+      requests = Tsr.where("test_uuid" => params[:test_uuid])
+      number = {}
+      number['test_uuid'] = params[:test_uuid].to_s
+
+      last_time = ['created_at']
+      requests.to_json(:only => last_time) if requests
+      final = requests[-1].to_json(:only => last_time)
+
+      string_0 = final.to_s 
+      string_1 = string_0.split(':')     
+      string_2 = string_1[1] + ":" + string_1[2] + ":" + string_1[3] + ":" + string_1[4]
+      string_3 = string_2.split('"')   
+      string_4 = string_3[1]
+
+      number['last_time_executed'] = string_4
+
+#      logger.info "tsr: test_uuid: #{number[:test_uuid]} count: #{number[:count]}"
+      halt 200,  number.to_json
+      json_error 404, 'trr: No requests were found'
+    rescue Mongoid::Errors::DocumentNotFound => e
+      halt(404)
+    end
+  end
+
+
 end
