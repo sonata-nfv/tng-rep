@@ -412,7 +412,9 @@ class TangoVnVTrRepository < Sinatra::Application
 #      logger.info "tsr: test_uuid: #{number[:test_uuid]} count: #{number[:count]}"
       halt 200,  number.to_json
       json_error 404, 'trr: No requests were found'
-    rescue Mongoid::Errors::DocumentNotFound => e
+#    rescue Mongoid::Errors::DocumentNotFound => e
+    rescue => e
+      logger.error e
       halt(404)
     end
   end
