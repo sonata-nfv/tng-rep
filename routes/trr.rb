@@ -177,7 +177,7 @@ class TangoVnVTrRepository < Sinatra::Application
       # Delete old record
       Trr.where('_id' => params[:id]).delete
       # Create a record
-      instance['_id'] = SecureRandom.uuid
+      instance['_id'] = params[:id]
       new_trr = Trr.create!(instance)
     rescue Moped::Errors::OperationFailure => e
       return 409, 'ERROR: Duplicated trr UUID'
@@ -345,7 +345,7 @@ class TangoVnVTrRepository < Sinatra::Application
       # Delete old record
       Tsr.where('_id' => params[:id]).delete
       # Create a record
-      instance['_id'] = SecureRandom.uuid
+      instance['_id'] = params[:id]
       new_trr = Tsr.create!(instance)
     rescue Moped::Errors::OperationFailure => e
       return 409, 'ERROR: Duplicated trr UUID'
@@ -412,7 +412,9 @@ class TangoVnVTrRepository < Sinatra::Application
 #      logger.info "tsr: test_uuid: #{number[:test_uuid]} count: #{number[:count]}"
       halt 200,  number.to_json
       json_error 404, 'trr: No requests were found'
-    rescue Mongoid::Errors::DocumentNotFound => e
+#    rescue Mongoid::Errors::DocumentNotFound => e
+    rescue => e
+      logger.error e
       halt(404)
     end
   end
