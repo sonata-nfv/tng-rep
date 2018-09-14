@@ -71,12 +71,37 @@ class SonataVnfRepository < Sinatra::Application
   #   - JSON (default)
   #   - YAML including output parameter (e.g /?output=YAML)
   get '/' do
+
+    uri = Addressable::URI.new
     params['page_number'] ||= DEFAULT_PAGE_NUMBER
     params['page_size'] ||= DEFAULT_PAGE_SIZE
+    uri.query_values = params
+    logger.info "vnfr: entered GET /vnfrs?#{uri.query}"
 
     # Only accept positive numbers
     params[:page_number] = 1 if params[:page_number].to_i < 1
     params[:page_size] = 2 if params[:page_size].to_i < 1
+
+    # transform 'string' params Hash into keys
+    keyed_params = keyed_hash(params)
+
+    # Get paginated list
+    headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
+    headers[:params] = params unless params.empty?
+    # get rid of :page_number and :page_size
+    [:page_number, :page_size, :descriptor_reference].each { |k| keyed_params.delete(k) }
+    valid_fields = [:page_number, :page_size, :descriptor_reference]
+    logger.info "vnfrs: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}"
+    json_error 400, "vnfrs: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
+
+    if params[:descriptor_reference]
+      vnfs = Vnfr.paginate(page: params[:page_number], page_size: params[:page_size]).where("descriptor_reference" => params[:descriptor_reference])
+    else
+      vnfs = Vnfr.paginate(page: params[:page_number], page_size: params[:page_size])
+    end
+    logger.info "vnfs: leaving GET /vnfrs?#{uri.query} with #{vnfs.to_json}"
+    halt 200, vnfs.to_json if vnfs
+    json_error 404, 'vnfs: No vnfrs were found'
 
     # Get paginated list
     vnfs = Vnfr.paginate(page: params[:page_number], page_size: params[:page_size])
@@ -91,11 +116,6 @@ class SonataVnfRepository < Sinatra::Application
     end
 
     begin
-      # Get paginated list
-      vnfs = Vnfr.paginate(page: params[:page_number], page_size: params[:page_size])
-      logger.debug(vnfs)
-      # Build HTTP Link Header
-      headers['Link'] = build_http_link(params[:page_number].to_i, params[:page_size])
       vnfs_json = vnfs.to_json
       if content_type == 'application/json'
         return 200, vnfs_json

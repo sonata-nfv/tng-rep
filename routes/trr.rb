@@ -137,6 +137,7 @@ class TangoVnVTrRepository < Sinatra::Application
     end
 
     begin
+      instance['_id'] = SecureRandom.uuid
       instance = Trr.create!(instance)
     rescue Moped::Errors::OperationFailure => e
       return 409, 'ERROR: Duplicated trr UUID'
@@ -176,6 +177,7 @@ class TangoVnVTrRepository < Sinatra::Application
       # Delete old record
       Trr.where('_id' => params[:id]).delete
       # Create a record
+      instance['_id'] = params[:id]
       new_trr = Trr.create!(instance)
     rescue Moped::Errors::OperationFailure => e
       return 409, 'ERROR: Duplicated trr UUID'
@@ -241,7 +243,11 @@ class TangoVnVTrRepository < Sinatra::Application
       requests = Tsr.paginate(page_number: params[:page_number], page_size: params[:page_size])
     end
     logger.info "trr: leaving GET /requests?#{uri.query} with #{requests.to_json}"
-    halt 200, requests.to_json if requests
+
+    fields = ['created_at', 'instance_uuid', 'package_id', 'service_uuid', 'status', 'test_plan_id', 'test_uuid', 'updated_at', 'uuid']
+    halt 200, requests.to_json(:only => fields) if requests
+    
+#    halt 200, requests.to_json if requests
     json_error 404, 'trr: No requests were found'
 
     begin
@@ -264,15 +270,17 @@ class TangoVnVTrRepository < Sinatra::Application
   # @method get_test-suite-results
   # @overload get "/test-suite-results"
   # Gets test-suite-results with an id
+  
   get '/test-suite-results/:id' do
     begin
-      @nsinstance = Tsr.find(params[:id])
+      @nsinstance = Tsr.find_by('uuid' => params[:id])
     rescue Mongoid::Errors::DocumentNotFound => e
       halt(404)
     end
     trr_json = @nsinstance.to_json
     return 200, trr_json
   end
+
 
   # @method post_test-suite-results
   # @overload post "/test-suite-results"
@@ -297,6 +305,7 @@ class TangoVnVTrRepository < Sinatra::Application
     end
 
     begin
+      instance['_id'] = SecureRandom.uuid
       instance = Tsr.create!(instance)
     rescue Moped::Errors::OperationFailure => e
       return 409, 'ERROR: Duplicated trr UUID'
@@ -336,6 +345,7 @@ class TangoVnVTrRepository < Sinatra::Application
       # Delete old record
       Tsr.where('_id' => params[:id]).delete
       # Create a record
+      instance['_id'] = params[:id]
       new_trr = Tsr.create!(instance)
     rescue Moped::Errors::OperationFailure => e
       return 409, 'ERROR: Duplicated trr UUID'
@@ -365,4 +375,49 @@ class TangoVnVTrRepository < Sinatra::Application
     return 200
     # return 200, new_ns.to_json
   end
+  
+  get '/test-suite-results/count/:test_uuid' do
+    begin      
+      requests = Tsr.where("test_uuid" => params[:test_uuid]).count()
+      number = {}
+      number['test_uuid'] = params[:test_uuid].to_s
+      number['count'] = requests.to_s
+      logger.info "tsr: test_uuid: #{number[:test_uuid]} count: #{number[:count]}"
+      halt 200,  number.to_json
+      json_error 404, 'trr: No requests were found'
+    rescue Mongoid::Errors::DocumentNotFound => e
+      halt(404)
+    end
+  end
+
+
+  get '/test-suite-results/last-time-executed/:test_uuid' do
+    begin      
+      requests = Tsr.where("test_uuid" => params[:test_uuid])
+      number = {}
+      number['test_uuid'] = params[:test_uuid].to_s
+
+      last_time = ['created_at']
+      requests.to_json(:only => last_time) if requests
+      final = requests[-1].to_json(:only => last_time)
+
+      string_0 = final.to_s 
+      string_1 = string_0.split(':')     
+      string_2 = string_1[1] + ":" + string_1[2] + ":" + string_1[3] + ":" + string_1[4]
+      string_3 = string_2.split('"')   
+      string_4 = string_3[1]
+
+      number['last_time_executed'] = string_4
+
+#      logger.info "tsr: test_uuid: #{number[:test_uuid]} count: #{number[:count]}"
+      halt 200,  number.to_json
+      json_error 404, 'trr: No requests were found'
+#    rescue Mongoid::Errors::DocumentNotFound => e
+    rescue => e
+      logger.error e
+      halt(404)
+    end
+  end
+
+
 end
