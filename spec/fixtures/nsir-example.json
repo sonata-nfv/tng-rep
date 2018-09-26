@@ -1,24 +1,24 @@
 {
-  'netServInstance_Uuid': [
+  "netServInstance_Uuid": [
     {
-      'servName': 'ns-squid-haproxy',
-      'servId': '4c7d854f-a0a1-451a-b31d-8447b4fd4fbc',
-      'workingStatus': 'ERROR',
-      'servInstanceId': 'null'
+      "servName": "ns-squid-haproxy",
+      "servId": "4c7d854f-a0a1-451a-b31d-8447b4fd4fbc",
+      "workingStatus": "ERROR",
+      "servInstanceId": "null"
     }
   ],
-  'vendor': '5gtango',
-  'id': 'ae75c97f-5ba6-4b96-b586-de66fadc8a0b',
-  'scaleTime': '',
-  'nstName': 'Y1_demo_test',
-  'nsiState': 'ERROR',
-  'name': 'hello',
-  'nstId': '9c2ac245-c36f-4387-9900-5a0181285a4e',
-  'updateTime': '',
-  'flavorId': '',
-  'sapInfo': '',
-  'description': 'bye_test',
-  'terminateTime': '',
-  'instantiateTime': '2018-09-26T10:00:33.015454',
-  'nstVersion': '0.1'
+  "vendor": "5gtango",
+  "id": "ae75c97f-5ba6-4b96-b586-de66fadc8a0b",
+  "scaleTime": "",
+  "nstName": "Y1_demo_test",
+  "nsiState": "ERROR",
+  "name": "hello",
+  "nstId": "9c2ac245-c36f-4387-9900-5a0181285a4e",
+  "updateTime": "",
+  "flavorId": "",
+  "sapInfo": "",
+  "description": "bye_test",
+  "terminateTime": "",
+  "instantiateTime": "2018-09-26T10:00:33.015454",
+  "nstVersion": "0.1"
 }
