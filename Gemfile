@@ -39,20 +39,20 @@ gem 'json', '~>1.8'
 gem 'json-schema', '~>2.5'
 gem 'jwt', '~> 1.5.5' # Json Web Token gem
 gem 'puma', '~> 3.11.0'
-gem 'rake', '~> 11.2.2'
+gem 'rake', '~> 12.3.0'
 gem 'rubyzip'
-gem 'sinatra', '~> 1.4.3', require: 'sinatra/base'
-gem 'sinatra-contrib', '~> 1.4.1', require: false
+gem 'sinatra', '~> 2.0.2', require: 'sinatra/base'
+gem 'sinatra-contrib', '~> 2.0.2, require: false
 
 group :development, :test do
   gem 'license_finder', '~> 2.1.2'
   gem 'rack-test', '~> 0.6', require: 'rack/test'
-  gem 'rspec', '~> 3.5.0'
+  gem 'rspec', '~> 3.7.0'
   gem 'rspec-its', '~> 1.2.0'
   gem 'rspec-mocks', '~> 3.5.0'
-  gem 'rubocop', '~> 0.48.1'
-  gem 'rubocop-checkstyle_formatter', '~> 0.2.0', require: false
-  gem 'webmock', '~> 2.1.0'
+  gem 'rubocop', '~> 0.52.1'
+  gem 'rubocop-checkstyle_formatter', '~> 0.4.0', require: false
+  gem 'webmock', '~> 3.1.1'
 end
 
 group :doc do
