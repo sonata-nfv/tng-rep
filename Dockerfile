@@ -30,7 +30,7 @@
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
 # encoding: utf-8
-FROM ruby:2.2.3-slim
+FROM ruby:2.4.3-slim-stretch
 RUN apt-get update && \
     apt-get install -y --no-install-recommends build-essential libcurl3 libcurl3-gnutls libcurl4-openssl-dev && \
           apt-get clean && \
