@@ -42,7 +42,7 @@ gem 'puma', '~> 3.11.0'
 gem 'rake', '~> 12.3.0'
 gem 'rubyzip'
 gem 'sinatra', '~> 2.0.2', require: 'sinatra/base'
-gem 'sinatra-contrib', '~> 2.0.2, require: false
+gem 'sinatra-contrib', '~> 2.0.2', require: false
 
 group :development, :test do
   gem 'license_finder', '~> 2.1.2'
