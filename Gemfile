@@ -38,7 +38,7 @@ gem 'curb', '~> 0.9.3' # Better performance Rest gem
 gem 'json', '~>1.8'
 gem 'json-schema', '~>2.5'
 gem 'jwt', '~> 1.5.5' # Json Web Token gem
-gem 'puma', '~> 3.4.0'
+gem 'puma', '~> 3.11.0'
 gem 'rake', '~> 11.2.2'
 gem 'rubyzip'
 gem 'sinatra', '~> 1.4.3', require: 'sinatra/base'
