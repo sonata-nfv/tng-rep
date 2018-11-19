@@ -1,3 +1,5 @@
+[![Join the chat at https://gitter.im/sonata-nfv/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sonata-nfv/Lobby) 
+
 [![Build Status](http://jenkins.sonata-nfv.eu/buildStatus/icon?job=tng-rep)](http://jenkins.sonata-nfv.eu/job/tng-rep)
 
 <p align="center"><img src="https://github.com/sonata-nfv/tng-api-gtw/wiki/images/sonata-5gtango-logo-500px.png" /></p>
