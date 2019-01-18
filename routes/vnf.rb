@@ -33,7 +33,7 @@
 # @see VNFRepository
 class SonataVnfRepository < Sinatra::Application
   
-  @@vnfr_schema=JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/son-schema/master/function-record/vnfr-schema.yml'){|f| f.read})))
+  @@vnfr_schema=JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-record/vnfr-schema.yml'){|f| f.read})))
   # https and openssl libs (require 'net/https' require 'openssl') enable access to external https links behind a proxy
 
   DEFAULT_PAGE_NUMBER = '0'
