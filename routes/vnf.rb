@@ -95,16 +95,16 @@ class SonataVnfRepository < Sinatra::Application
     json_error 400, "vnfrs: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
 
     if params[:descriptor_reference]
-      vnfs = Vnfr.paginate(page: params[:page_number], page_size: params[:page_size]).where("descriptor_reference" => params[:descriptor_reference])
+      vnfs = Vnfr.paginate(page: params[:page_number], limit: params[:page_size]).where("descriptor_reference" => params[:descriptor_reference])
     else
-      vnfs = Vnfr.paginate(page: params[:page_number], page_size: params[:page_size])
+      vnfs = Vnfr.paginate(page: params[:page_number], limit: params[:page_size])
     end
     logger.info "vnfs: leaving GET /vnfrs?#{uri.query} with #{vnfs.to_json}"
     halt 200, vnfs.to_json if vnfs
     json_error 404, 'vnfs: No vnfrs were found'
 
     # Get paginated list
-    vnfs = Vnfr.paginate(page: params[:page_number], page_size: params[:page_size])
+    vnfs = Vnfr.paginate(page: params[:page_number], limit: params[:page_size])
     logger.debug(vnfs)
     # Build HTTP Link Header
     headers['Link'] = build_http_link(params[:page_number].to_i, params[:page_size])
