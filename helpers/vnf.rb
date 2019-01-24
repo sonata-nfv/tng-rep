@@ -127,7 +127,7 @@ class SonataVnfRepository < Sinatra::Application
     link = ''
     # Next link
     next_page_number = page_number + 1
-    next_vnfs = Vnfr.paginate(page: next_page_number, page_size: page_size)
+    next_vnfs = Vnfr.paginate(page: next_page_number, limit: page_size)
     begin
       link << '<localhost:4012/virtual-network-functions?page_number=' + next_page_number.to_s + '&page_size=' + page_size.to_s + '>; rel="next"' unless next_vnfs.empty?
     rescue
@@ -137,7 +137,7 @@ class SonataVnfRepository < Sinatra::Application
     unless page_number == 1
       # Previous link
       previous_page_number = page_number - 1
-      previous_vnfs = Vnf.paginate(page: previous_page_number, page_size: page_size)
+      previous_vnfs = Vnf.paginate(page: previous_page_number, limit: page_size)
       unless previous_vnfs.empty?
         link << ', ' unless next_vnfs.empty?
         link << '<localhost:4012/virtual-network-functions?page_number=' + previous_page_number.to_s + '&page_size=' + page_size.to_s + '>; rel="last"'
@@ -151,7 +151,7 @@ class SonataVnfRepository < Sinatra::Application
     link = ''
     # Next link
     next_page_number = page_number + 1
-    next_vnfs = Vnf.paginate(page: next_page_number, page_size: page_size)
+    next_vnfs = Vnf.paginate(page: next_page_number, limit: page_size)
     begin
       link << '<localhost:4012/virtual-network-functions/name/' + name.to_s + '?page_number=' + next_page_number.to_s + '&page_size=' + page_size.to_s + '>; rel="next"' unless next_vnfs.empty?
     rescue
@@ -161,7 +161,7 @@ class SonataVnfRepository < Sinatra::Application
     unless page_number == 1
       # Previous link
       previous_page_number = page_number - 1
-      previous_vnfs = Vnf.paginate(page: previous_page_number, page_size: page_size)
+      previous_vnfs = Vnf.paginate(page: previous_page_number, limit: page_size)
       unless previous_vnfs.empty?
         link << ', ' unless next_vnfs.empty?
         link << '<localhost:4012/virtual-network-functions/name/' + name.to_s + '?page_number=' + previous_page_number.to_s + '&page_size=' + page_size.to_s + '>; rel="last"'
