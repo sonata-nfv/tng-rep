@@ -77,7 +77,7 @@ class TangoVnVTrRepository < Sinatra::Application
     logger.info "trr: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}"
     json_error 400, "trr: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
 
-    requests = Trr.paginate(page_number: params[:page_number], page_size: params[:page_size])
+    requests = Trr.paginate(page_number: params[:page_number], limit: params[:page_size])
     logger.info "trr: leaving GET /requests?#{uri.query} with #{requests.to_json}"
     halt 200, requests.to_json if requests
     json_error 404, 'trr: No requests were found'
@@ -236,11 +236,11 @@ class TangoVnVTrRepository < Sinatra::Application
     json_error 400, "trr: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
 
     if params[:ns_uuid]
-      requests = Tsr.paginate(page_number: params[:page_number], page_size: params[:page_size]).where("ns_uuid" => params[:ns_uuid])
+      requests = Tsr.paginate(page_number: params[:page_number], limit: params[:page_size]).where("ns_uuid" => params[:ns_uuid])
     elsif params[:test_uuid]
-      requests = Tsr.paginate(page_number: params[:page_number], page_size: params[:page_size]).where("test_uuid" => params[:test_uuid])
+      requests = Tsr.paginate(page_number: params[:page_number], limit: params[:page_size]).where("test_uuid" => params[:test_uuid])
     elsif
-      requests = Tsr.paginate(page_number: params[:page_number], page_size: params[:page_size])
+      requests = Tsr.paginate(page_number: params[:page_number], limit: params[:page_size])
     end
     logger.info "trr: leaving GET /requests?#{uri.query} with #{requests.to_json}"
 
