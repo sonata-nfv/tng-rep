@@ -244,6 +244,10 @@ class TangoVnVTrRepository < Sinatra::Application
     end
     logger.info "trr: leaving GET /requests?#{uri.query} with #{requests.to_json}"
 
+    if params[:test_uuid]
+      halt 200, requests.to_json
+    end
+    
     fields = ['created_at', 'instance_uuid', 'package_id', 'service_uuid', 'status', 'test_plan_id', 'test_uuid', 'updated_at', 'uuid']
     halt 200, requests.to_json(:only => fields) if requests
     
