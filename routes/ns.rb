@@ -77,7 +77,7 @@ class SonataNsRepository < Sinatra::Application
     logger.info "nsr: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}"
     json_error 400, "nsr: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
 
-    requests = Nsr.paginate(page_number: params[:page_number], limit: params[:page_size])
+    requests = Nsr.paginate(page_number: params[:page_number], limit: params[:page_size]).desc(:created_at)
     logger.info "nsr: leaving GET /requests?#{uri.query} with #{requests.to_json}"
     halt 200, requests.to_json if requests
     json_error 404, 'nsr: No requests were found'
