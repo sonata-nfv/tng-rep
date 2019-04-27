@@ -37,7 +37,7 @@ require 'tng/gtk/utils/logger'
 
 # This the Class of Sonata Ns Repository
 class TangoVnVTrRepository < Sinatra::Application
-  LOGGER=Tng::Gtk::Utils::LOGGER
+  LOGGER=Tng::Gtk::Utils::Logger
   LOGGED_COMPONENT=self.name
   @@began_at = Time.now.utc
   LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")

@@ -37,7 +37,7 @@ class SonataVnfRepository < Sinatra::Application
   require 'json'
   require 'yaml'
   
-  LOGGER=Tng::Gtk::Utils::LOGGER
+  LOGGER=Tng::Gtk::Utils::Logger
   LOGGED_COMPONENT=self.name
   @@began_at = Time.now.utc
   LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")  
