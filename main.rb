@@ -80,16 +80,16 @@ configure do
   if ENV['SEC_FLAG'] == 'true'
     while retries <= 6 do
       # turn keycloak realm pub key into an actual openssl compat pub key
-      LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"RETRY=#{retries}"
+      LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"RETRY=#{retries}")
       code, keycloak_key = get_public_key(settings.auth_address,
                                           settings.auth_port,
                                           settings.api_ver,
                                           settings.pub_key_path)
-      LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"PUBLIC_KEY_CODE=#{code}"
-      LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"PUBLIC_KEY_MSG=#{keycloak_key}"
+      LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"PUBLIC_KEY_CODE=#{code}")
+      LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"PUBLIC_KEY_MSG=#{keycloak_key}")
       if code.to_i == 200
         keycloak_key, errors = parse_json(keycloak_key)
-        LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"PUBLIC_KEY=#{keycloak_key['items']['public-key']}"
+        LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"PUBLIC_KEY=#{keycloak_key['items']['public-key']}")
         break unless keycloak_key['items']['public-key'].empty?
       end
       retries += 1
@@ -99,7 +99,7 @@ configure do
 
   if code.to_i == 200
     # keycloak_key, errors = parse_json(keycloak_key)
-    # LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"PUBLIC_KEY=#{keycloak_key['items']['public-key']}"
+    # LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"PUBLIC_KEY=#{keycloak_key['items']['public-key']}")
     @s = "-----BEGIN PUBLIC KEY-----\n"
     @s += keycloak_key['items']['public-key'].scan(/.{1,64}/).join("\n")
     @s += "\n-----END PUBLIC KEY-----\n"
@@ -115,10 +115,10 @@ configure do
 
   unless settings.keycloak_pub_key.nil?
     response, r_code = register_service(settings.auth_address, settings.auth_port, settings.api_ver, settings.reg_path)
-    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"REG_RESPONSE=#{response} - #{r_code}"
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"REG_RESPONSE=#{response} - #{r_code}")
     if response
       access_token = login_service(settings.auth_address, settings.auth_port, settings.api_ver, settings.login_path)
-      LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"ACCESS_TOKEN=#{access_token}"
+      LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"ACCESS_TOKEN=#{access_token}")
       set :access_token, access_token unless access_token.nil?
     end
   end
