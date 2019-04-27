@@ -30,35 +30,26 @@
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
 
-require 'tng/gtk/utils/logger'
-
 # Sonata class
 class Sonata < Sinatra::Application
-  LOGGER=Tng::Gtk::Utils::Logger
-  LOGGED_COMPONENT=self.name
-  @@began_at = Time.now.utc
-  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")
 
   # @method get_log
   # @overload get '/network-services/log'
   # Returns contents of log file
   # Management method to get log file of catalogue remotely
-  get '/log' do
-    headers 'Content-Type' => 'text/plain; charset=utf8'
-    # filename = 'log/development.log'
-    filename = 'log/production.log'
-
-    # For testing purposes only
-    begin
-      txt = open(filename)
-
-    rescue => err
-      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "Error reading log file: #{err}")
-      return 500, "Error reading log file: #{err}"
-    end
-
-    halt 200, txt.read.to_s
-  end
+  # get '/log' do
+  #   headers 'Content-Type' => 'text/plain; charset=utf8'
+  #   # filename = 'log/development.log'
+  #   filename = 'log/production.log'
+  #   # For testing purposes only
+  #   begin
+  #     txt = open(filename)
+  #   rescue => err
+  #     LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "Error reading log file: #{err}")
+  #     return 500, "Error reading log file: #{err}"
+  #   end
+  #   halt 200, txt.read.to_s
+  # end
 
   # @method get_root
   # @overload get '/'

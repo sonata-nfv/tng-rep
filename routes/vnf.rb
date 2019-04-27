@@ -130,8 +130,8 @@ class SonataVnfRepository < Sinatra::Application
         vnfs_yml = json_to_yaml(vnfs_json)
         return 200, vnfs_yml
       end
-    rescue
-      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: 'Error Establishing a Database Connection')
+    rescue => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "Error Establishing a Database Connection #{e.to_s}")
       return 500, 'Error Establishing a Database Connection'
     end
   end
@@ -146,6 +146,7 @@ class SonataVnfRepository < Sinatra::Application
     begin
       @vnfInstance = Vnfr.find(params[:id])
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "vnfr not found: #{e.to_s}")
       halt (404)
     end
 
@@ -188,6 +189,7 @@ class SonataVnfRepository < Sinatra::Application
       instance = Vnfr.find( instance['id'] )
       return 409, 'ERROR: Duplicated VNF ID'
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "vnfr not found: #{e.to_s}")
       # Continue
     end
 
@@ -195,6 +197,7 @@ class SonataVnfRepository < Sinatra::Application
     begin
       instance = Vnfr.create!(instance)
     rescue Moped::Errors::OperationFailure => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "ERROR: Duplicated VNF ID #{e.to_s}")
       return 409, 'ERROR: Duplicated VNF ID' if e.message.include? 'E11000'
     end
 
@@ -231,6 +234,7 @@ class SonataVnfRepository < Sinatra::Application
       vnfr = Vnfr.find( instance['id'] )
       puts 'VNF is found'
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "vnfr not found: #{e.to_s}")
       return 404, 'This VNFR does not exists'
     end
 
@@ -246,6 +250,7 @@ class SonataVnfRepository < Sinatra::Application
       # Create a record
       new_vnfr = Vnfr.create!(instance)
     rescue Moped::Errors::OperationFailure => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "ERROR: Duplicated VNF ID #{e.to_s}")
       return 409, 'ERROR: Duplicated NS ID' if e.message.include? 'E11000'
     end
 
@@ -267,7 +272,8 @@ class SonataVnfRepository < Sinatra::Application
     begin
       vnf = Vnfr.find_by( {'id' =>  params[:id]})
     rescue Mongoid::Errors::DocumentNotFound => e
-      return 404,'ERROR: Operation failed'
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "vnfr not found: #{e.to_s}")
+      return 404,'ERROR: vnfr not found'
     end
     vnf.destroy
     return 200, 'OK: vnfr removed'

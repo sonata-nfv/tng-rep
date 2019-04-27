@@ -112,6 +112,7 @@ class SonataNsiRepository < Sinatra::Application
     begin
       @nsiinstance = Nsir.find(params[:id])
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "nsir not found: #{e.to_s}")
       halt(404)
     end
     nsir_json = @nsiinstance.to_json
@@ -137,12 +138,14 @@ class SonataNsiRepository < Sinatra::Application
       instance = Nsir.find({ '_id' => instance['_id'] })
       return 409, 'ERROR: Duplicated nsir UUID'
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "nsir not found: #{e.to_s}")
       # Continue
     end
 
     begin
       instance = Nsir.create!(instance)
     rescue Moped::Errors::OperationFailure => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "ERROR: Duplicated nsir UUID: #{e.to_s}")
       return 409, 'ERROR: Duplicated nsir UUID'
     end
     return 200, instance.to_json
@@ -170,6 +173,7 @@ class SonataNsiRepository < Sinatra::Application
       nsir = Nsir.find_by('_id' => params[:id])
       puts 'nsir is found'
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "nsir not found: #{e.to_s}")
       return 404, 'nsir not found'
     end
 
@@ -181,6 +185,7 @@ class SonataNsiRepository < Sinatra::Application
       # Create a record
       new_nsir = Nsir.create!(instance)
     rescue Moped::Errors::OperationFailure => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "ERROR: Duplicated nsir UUID: #{e.to_s}")
       return 409, 'ERROR: Duplicated nsir UUID'
     end
 
@@ -194,6 +199,7 @@ class SonataNsiRepository < Sinatra::Application
       nsir = Nsir.find_by('_id' => params[:id])
       puts 'nsir is found'
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "nsir not found: #{e.to_s}")
       return 404, 'nsir not found'
     end
 

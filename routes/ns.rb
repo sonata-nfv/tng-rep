@@ -111,6 +111,7 @@ class SonataNsRepository < Sinatra::Application
     begin
       @nsinstance = Nsr.find(params[:id])
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "DocumentNotFound: #{e.to_s}")
       halt(404)
     end
     nsr_json = @nsinstance.to_json
@@ -136,12 +137,14 @@ class SonataNsRepository < Sinatra::Application
       instance = Nsr.find({ '_id' => instance['_id'] })
       return 409, 'ERROR: Duplicated nsr UUID'
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "DocumentNotFound: #{e.to_s}")
       # Continue
     end
 
     begin
       instance = Nsr.create!(instance)
     rescue Moped::Errors::OperationFailure => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "ERROR: Duplicated nsr UUID: #{e.to_s}")
       return 409, 'ERROR: Duplicated nsr UUID'
     end
     return 200, instance.to_json
@@ -169,6 +172,7 @@ class SonataNsRepository < Sinatra::Application
       nsr = Nsr.find_by('_id' => params[:id])
       puts 'nsr is found'
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "nsr not found: #{e.to_s}")
       return 404, 'nsr not found'
     end
 
@@ -180,6 +184,7 @@ class SonataNsRepository < Sinatra::Application
       # Create a record
       new_nsr = Nsr.create!(instance)
     rescue Moped::Errors::OperationFailure => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "ERROR: Duplicated nsr UUID: #{e.to_s}")      
       return 409, 'ERROR: Duplicated nsr UUID'
     end
 
@@ -193,6 +198,7 @@ class SonataNsRepository < Sinatra::Application
       nsr = Nsr.find_by('_id' => params[:id])
       puts 'nsr is found'
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "nsr not found: #{e.to_s}")
       return 404, 'nsr not found'
     end
 
