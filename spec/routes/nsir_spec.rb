@@ -38,7 +38,6 @@ require 'pp'
 require 'rspec/its'
 
 RSpec.describe SonataNsiRepository do
-
   def app
     @app ||= SonataNsiRepository
   end

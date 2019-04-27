@@ -30,8 +30,15 @@
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
 
+require 'tng/gtk/utils/logger'
+
 # Sonata class
 class Sonata < Sinatra::Application
+  LOGGER=Tng::Gtk::Utils::Logger
+  LOGGED_COMPONENT=self.name
+  @@began_at = Time.now.utc
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")
+
   # @method get_log
   # @overload get '/network-services/log'
   # Returns contents of log file
@@ -46,7 +53,7 @@ class Sonata < Sinatra::Application
       txt = open(filename)
 
     rescue => err
-      logger.error "Error reading log file: #{err}"
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "Error reading log file: #{err}")
       return 500, "Error reading log file: #{err}"
     end
 

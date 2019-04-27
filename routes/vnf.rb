@@ -30,9 +30,15 @@
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
 
+require 'tng/gtk/utils/logger'
+
 # @see VNFRepository
 class SonataVnfRepository < Sinatra::Application
-  
+  LOGGER=Tng::Gtk::Utils::Logger
+  LOGGED_COMPONENT=self.name
+  @@began_at = Time.now.utc
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")
+
   @@vnfr_schema=JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-record/vnfr-schema.yml'){|f| f.read})))
   # https and openssl libs (require 'net/https' require 'openssl') enable access to external https links behind a proxy
 
@@ -76,7 +82,7 @@ class SonataVnfRepository < Sinatra::Application
     params['page_number'] ||= DEFAULT_PAGE_NUMBER
     params['page_size'] ||= DEFAULT_PAGE_SIZE
     uri.query_values = params
-    logger.info "vnfr: entered GET /vnfrs?#{uri.query}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"vnfr: entered GET /vnfrs?#{uri.query}")
 
     # Only accept positive numbers
     params[:page_number] = 1 if params[:page_number].to_i < 1
@@ -91,7 +97,7 @@ class SonataVnfRepository < Sinatra::Application
     # get rid of :page_number and :page_size
     [:page_number, :page_size, :descriptor_reference].each { |k| keyed_params.delete(k) }
     valid_fields = [:page_number, :page_size, :descriptor_reference]
-    logger.info "vnfrs: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"vnfrs: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}")
     json_error 400, "vnfrs: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
 
     if params[:descriptor_reference]
@@ -99,13 +105,13 @@ class SonataVnfRepository < Sinatra::Application
     else
       vnfs = Vnfr.paginate(page: params[:page_number], limit: params[:page_size]).desc(:created_at)
     end
-    logger.info "vnfs: leaving GET /vnfrs?#{uri.query} with #{vnfs.to_json}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"vnfs: leaving GET /vnfrs?#{uri.query} with #{vnfs.to_json}")
     halt 200, vnfs.to_json if vnfs
     json_error 404, 'vnfs: No vnfrs were found'
 
     # Get paginated list
     vnfs = Vnfr.paginate(page: params[:page_number], limit: params[:page_size]).desc(:created_at)
-    logger.debug(vnfs)
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message: "vnfs #{vnfs}")
     # Build HTTP Link Header
     headers['Link'] = build_http_link(params[:page_number].to_i, params[:page_size])
 
@@ -124,7 +130,7 @@ class SonataVnfRepository < Sinatra::Application
         return 200, vnfs_yml
       end
     rescue
-      logger.error 'Error Establishing a Database Connection'
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: 'Error Establishing a Database Connection')
       return 500, 'Error Establishing a Database Connection'
     end
   end

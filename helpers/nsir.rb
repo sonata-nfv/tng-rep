@@ -30,8 +30,15 @@
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
 
+require 'tng/gtk/utils/logger'
+
 # Class for Sonata_NS_Repository
 class SonataNsiRepository < Sinatra::Application
+  LOGGER=Tng::Gtk::Utils::Logger
+  LOGGED_COMPONENT=self.name
+  @@began_at = Time.now.utc
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")
+
   require 'json'
   require 'yaml'
 
@@ -46,7 +53,7 @@ class SonataNsiRepository < Sinatra::Application
       parsed_message = JSON.parse(message) # parse json message
     rescue JSON::ParserError => e
       # If JSON not valid, return with errors
-      logger.error "JSON parsing: #{e.to_s}"
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "JSON parsing: #{e.to_s}")
       return message, e.to_s + "\n"
     end
     return parsed_message, nil
@@ -54,7 +61,7 @@ class SonataNsiRepository < Sinatra::Application
 
   def json_error(code, message)
     msg = {'error' => message}
-    logger.error msg.to_s
+    LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: msg.to_s)
     halt code, {'Content-type'=>'application/json'}, msg.to_json
   end
 
@@ -65,7 +72,7 @@ class SonataNsiRepository < Sinatra::Application
     begin
       output_yml = YAML.dump(JSON.parse(input_json))
     rescue
-      logger.error 'Error parsing from JSON to YAML'
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: 'Error parsing from JSON to YAML')
     end
   output_yml
   end
@@ -80,7 +87,7 @@ class SonataNsiRepository < Sinatra::Application
     begin
       JSON::Validator.validate!(schema, message)
     rescue JSON::Schema::ValidationError => e
-      logger.error "JSON validating: #{e.to_s}"
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "JSON validating: #{e.to_s}")
       return e.to_s + "\n"
     end
     nil

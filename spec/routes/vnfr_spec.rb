@@ -38,7 +38,6 @@ require 'pp'
 require 'rspec/its'
 
 RSpec.describe SonataVnfRepository do
-
   def app
     @app ||= SonataVnfRepository
   end

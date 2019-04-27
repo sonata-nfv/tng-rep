@@ -55,11 +55,11 @@ configure do
   Dir.mkdir("#{settings.root}/log") unless File.exist?("#{settings.root}/log")
   log_file = File.new("#{settings.root}/log/#{settings.environment}.log", 'a+')
   log_file.sync = true
-  use Rack::CommonLogger, log_file
+  use Rack::CommonLOGGER, log_file
 
-  logger = Logger.new(log_file)
-  logger.level = Logger::DEBUG
-  set :logger, logger
+  LOGGER = LOGGER.new(log_file)
+  LOGGER.level = LOGGER::DEBUG
+  set :LOGGER, LOGGER
 
   # Configuration for Authentication and Authorization layer
   conf = YAML::load_file("#{settings.root}/config/adapter.yml")
@@ -80,16 +80,16 @@ configure do
   if ENV['SEC_FLAG'] == 'true'
     while retries <= 6 do
       # turn keycloak realm pub key into an actual openssl compat pub key
-      logger.debug "RETRY=#{retries}"
+      LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"RETRY=#{retries}"
       code, keycloak_key = get_public_key(settings.auth_address,
                                           settings.auth_port,
                                           settings.api_ver,
                                           settings.pub_key_path)
-      logger.debug "PUBLIC_KEY_CODE=#{code}"
-      logger.debug "PUBLIC_KEY_MSG=#{keycloak_key}"
+      LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"PUBLIC_KEY_CODE=#{code}"
+      LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"PUBLIC_KEY_MSG=#{keycloak_key}"
       if code.to_i == 200
         keycloak_key, errors = parse_json(keycloak_key)
-        logger.debug "PUBLIC_KEY=#{keycloak_key['items']['public-key']}"
+        LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"PUBLIC_KEY=#{keycloak_key['items']['public-key']}"
         break unless keycloak_key['items']['public-key'].empty?
       end
       retries += 1
@@ -99,7 +99,7 @@ configure do
 
   if code.to_i == 200
     # keycloak_key, errors = parse_json(keycloak_key)
-    # logger.debug "PUBLIC_KEY=#{keycloak_key['items']['public-key']}"
+    # LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"PUBLIC_KEY=#{keycloak_key['items']['public-key']}"
     @s = "-----BEGIN PUBLIC KEY-----\n"
     @s += keycloak_key['items']['public-key'].scan(/.{1,64}/).join("\n")
     @s += "\n-----END PUBLIC KEY-----\n"
@@ -115,10 +115,10 @@ configure do
 
   unless settings.keycloak_pub_key.nil?
     response, r_code = register_service(settings.auth_address, settings.auth_port, settings.api_ver, settings.reg_path)
-    logger.debug "REG_RESPONSE=#{response} - #{r_code}"
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"REG_RESPONSE=#{response} - #{r_code}"
     if response
       access_token = login_service(settings.auth_address, settings.auth_port, settings.api_ver, settings.login_path)
-      logger.debug "ACCESS_TOKEN=#{access_token}"
+      LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"ACCESS_TOKEN=#{access_token}"
       set :access_token, access_token unless access_token.nil?
     end
   end
@@ -126,7 +126,7 @@ configure do
 end
 
 before do
-  logger.level = Logger::DEBUG
+  LOGGER.level = LOGGER::DEBUG
 
   log_file = File.new("#{settings.root}/log/#{settings.environment}.log", 'a+')
   STDOUT.reopen(log_file)
@@ -134,9 +134,9 @@ before do
 
   # SECURITY CHECKS
   unless settings.keycloak_pub_key.nil? || settings.access_token.nil?
-    settings.logger.debug "TOKEN_TO_CHECK=#{settings.access_token}"
+    settings.LOGGER.debug "TOKEN_TO_CHECK=#{settings.access_token}"
     status = decode_token(settings.access_token, settings.keycloak_pub_key)
-    settings.logger.debug "TOKEN_STATUS=#{status}"
+    settings.LOGGER.debug "TOKEN_STATUS=#{status}"
     unless status
     access_token = login_service(settings.auth_address, settings.auth_port, settings.api_ver, settings.login_path)
     settings.access_token = access_token unless access_token.nil?
@@ -177,7 +177,7 @@ class SonataNsRepository < Sinatra::Application
   config_file 'config/config.yml'
   Mongoid.load!('config/mongoid.yml')
   before {
-    env['rack.logger'] = Logger.new "#{settings.root}/log/#{settings.environment}.log"
+    env['rack.LOGGER'] = LOGGER.new "#{settings.root}/log/#{settings.environment}.log"
   }
 end
 
@@ -188,7 +188,7 @@ class SonataNsiRepository < Sinatra::Application
   config_file 'config/config.yml'
   Mongoid.load!('config/mongoid.yml')
   before {
-    env['rack.logger'] = Logger.new "#{settings.root}/log/#{settings.environment}.log"
+    env['rack.LOGGER'] = LOGGER.new "#{settings.root}/log/#{settings.environment}.log"
   }
 end
 
@@ -199,7 +199,7 @@ class SonataVnfRepository < Sinatra::Application
   config_file 'config/config.yml'
   Mongoid.load!('config/mongoid.yml')
   before {
-     env['rack.logger'] = Logger.new "#{settings.root}/log/#{settings.environment}.log"
+     env['rack.LOGGER'] = LOGGER.new "#{settings.root}/log/#{settings.environment}.log"
   }
 end
 
@@ -210,6 +210,6 @@ class TangoVnVTrRepository < Sinatra::Application
   config_file 'config/config.yml'
   Mongoid.load!('config/mongoid.yml')
   before {
-    env['rack.logger'] = Logger.new "#{settings.root}/log/#{settings.environment}.log"
+    env['rack.LOGGER'] = LOGGER.new "#{settings.root}/log/#{settings.environment}.log"
   }
 end

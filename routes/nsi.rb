@@ -33,9 +33,15 @@
 require 'addressable/uri'
 require 'pp'
 require 'json'
+require 'tng/gtk/utils/logger'
 
-# This Class is the Class of Sonata Network Slice Repository
+# This is the Class of Sonata Network Slice Repository
 class SonataNsiRepository < Sinatra::Application
+  LOGGER=Tng::Gtk::Utils::Logger
+  LOGGED_COMPONENT=self.name
+  @@began_at = Time.now.utc
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")
+
   @@nsir_schema = JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/slice-record/nsir-schema.yml') { |f| f.read })))
   # https and openssl libs (require 'net/https' require 'openssl') enable access to external https links behind a proxy
 
@@ -63,7 +69,7 @@ class SonataNsiRepository < Sinatra::Application
     params['page_number'] ||= DEFAULT_PAGE_NUMBER
     params['page_size'] ||= DEFAULT_PAGE_SIZE
     uri.query_values = params
-    logger.info "nsir: entered GET /records/nsir/ns-instances?#{uri.query}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"nsir: entered GET /records/nsir/ns-instances?#{uri.query}")
 
     # transform 'string' params Hash into keys
     keyed_params = keyed_hash(params)
@@ -74,11 +80,11 @@ class SonataNsiRepository < Sinatra::Application
     # get rid of :page_number and :page_size
     [:page_number, :page_size].each { |k| keyed_params.delete(k) }
     valid_fields = [:page_number, :page_size]
-    logger.info "nsir: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"nsir: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}")
     json_error 400, "nsir: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
 
     requests = Nsir.paginate(page_number: params[:page_number], limit: params[:page_size]).desc(:created_at)
-    logger.info "nsir: leaving GET /requests?#{uri.query} with #{requests.to_json}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"nsir: leaving GET /requests?#{uri.query} with #{requests.to_json}")
     halt 200, requests.to_json if requests
     json_error 404, 'nsir: No requests were found'
 
@@ -93,7 +99,7 @@ class SonataNsiRepository < Sinatra::Application
         return 200, nsir_yml
       end
     rescue
-      logger.error 'Error Establishing a Database Connection'
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: 'Error Establishing a Database Connection')
       return 500, 'Error Establishing a Database Connection'
     end
   end

@@ -33,9 +33,14 @@
 require 'addressable/uri'
 require 'pp'
 require 'json'
+require 'tng/gtk/utils/LOGGER'
 
-# This Class is the Class of Sonata Ns Repository
+# This the Class of Sonata Ns Repository
 class TangoVnVTrRepository < Sinatra::Application
+  LOGGER=Tng::Gtk::Utils::LOGGER
+  LOGGED_COMPONENT=self.name
+  @@began_at = Time.now.utc
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")
   # @@trr_schema = JSON.parse(JSON.dump(YAML.load(open('') { |f| f.read })))
   # https and openssl libs (require 'net/https' require 'openssl') enable access to external https links behind a proxy
 
@@ -63,7 +68,7 @@ class TangoVnVTrRepository < Sinatra::Application
     params['page_number'] ||= DEFAULT_PAGE_NUMBER
     params['page_size'] ||= DEFAULT_PAGE_SIZE
     uri.query_values = params
-    logger.info "trr: entered GET /trr/test-plans?#{uri.query}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"trr: entered GET /trr/test-plans?#{uri.query}")
 
     # transform 'string' params Hash into keys
     keyed_params = keyed_hash(params)
@@ -74,11 +79,11 @@ class TangoVnVTrRepository < Sinatra::Application
     # get rid of :page_number and :page_size
     [:page_number, :page_size].each { |k| keyed_params.delete(k) }
     valid_fields = [:page_number, :page_size]
-    logger.info "trr: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"trr: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}")
     json_error 400, "trr: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
 
     requests = Trr.paginate(page_number: params[:page_number], limit: params[:page_size]).desc(:created_at)
-    logger.info "trr: leaving GET /requests?#{uri.query} with #{requests.to_json}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"trr: leaving GET /requests?#{uri.query} with #{requests.to_json}")
     halt 200, requests.to_json if requests
     json_error 404, 'trr: No requests were found'
 
@@ -95,7 +100,7 @@ class TangoVnVTrRepository < Sinatra::Application
         return 200, trr_yml
       end
     rescue
-      logger.error 'Error Establishing a Database Connection'
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: 'Error Establishing a Database Connection')
       return 500, 'Error Establishing a Database Connection'
     end
   end
@@ -221,7 +226,7 @@ class TangoVnVTrRepository < Sinatra::Application
     params['page_number'] ||= DEFAULT_PAGE_NUMBER
     params['page_size'] ||= DEFAULT_PAGE_SIZE
     uri.query_values = params
-    logger.info "trr: entered GET /trr/test-suite-results?#{uri.query}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"trr: entered GET /trr/test-suite-results?#{uri.query}")
 
     # transform 'string' params Hash into keys
     keyed_params = keyed_hash(params)
@@ -232,7 +237,7 @@ class TangoVnVTrRepository < Sinatra::Application
     # get rid of :page_number and :page_size
     [:page_number, :page_size, :ns_uuid, :test_uuid].each { |k| keyed_params.delete(k) }
     valid_fields = [:page_number, :page_size, :ns_uuid, :test_uuid]
-    logger.info "trr: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"trr: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}")
     json_error 400, "trr: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
 
     if params[:ns_uuid]
@@ -242,7 +247,7 @@ class TangoVnVTrRepository < Sinatra::Application
     elsif
       requests = Tsr.paginate(page_number: params[:page_number], limit: params[:page_size]).desc(:created_at)
     end
-    logger.info "trr: leaving GET /requests?#{uri.query} with #{requests.to_json}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"trr: leaving GET /requests?#{uri.query} with #{requests.to_json}")
 
     if params[:test_uuid]
       halt 200, requests.to_json
@@ -266,7 +271,7 @@ class TangoVnVTrRepository < Sinatra::Application
         return 200, trr_yml
       end
     rescue
-      logger.error 'Error Establishing a Database Connection'
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: 'Error Establishing a Database Connection')
       return 500, 'Error Establishing a Database Connection'
     end
   end
@@ -386,7 +391,7 @@ class TangoVnVTrRepository < Sinatra::Application
       number = {}
       number['test_uuid'] = params[:test_uuid].to_s
       number['count'] = requests.to_s
-      logger.info "tsr: test_uuid: #{number[:test_uuid]} count: #{number[:count]}"
+      LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"tsr: test_uuid: #{number[:test_uuid]} count: #{number[:count]}")
       halt 200,  number.to_json
       json_error 404, 'trr: No requests were found'
     rescue Mongoid::Errors::DocumentNotFound => e
@@ -413,12 +418,12 @@ class TangoVnVTrRepository < Sinatra::Application
 
       number['last_time_executed'] = string_4
 
-#      logger.info "tsr: test_uuid: #{number[:test_uuid]} count: #{number[:count]}"
+#      LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"tsr: test_uuid: #{number[:test_uuid]} count: #{number[:count]}")
       halt 200,  number.to_json
       json_error 404, 'trr: No requests were found'
 #    rescue Mongoid::Errors::DocumentNotFound => e
     rescue => e
-      logger.error e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: e)
       halt(404)
     end
   end

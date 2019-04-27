@@ -33,12 +33,18 @@
 require 'addressable/uri'
 require 'pp'
 require 'json'
+require 'tng/gtk/utils/logger'
 
-# This Class is the Class of Sonata Ns Repository
+# This is the Class of Sonata Ns Repository
 class SonataNsRepository < Sinatra::Application
+  LOGGER=Tng::Gtk::Utils::Logger
+  LOGGED_COMPONENT=self.name
+  @@began_at = Time.now.utc
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")
+
   @@nsr_schema = JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-record/nsr-schema.yml') { |f| f.read })))
   # https and openssl libs (require 'net/https' require 'openssl') enable access to external https links behind a proxy
-
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"schema = #{@@nsr_schema}")
   DEFAULT_PAGE_NUMBER = '0'
   DEFAULT_PAGE_SIZE = '10'
   DEFAULT_MAX_PAGE_SIZE = '100'
@@ -63,7 +69,7 @@ class SonataNsRepository < Sinatra::Application
     params['page_number'] ||= DEFAULT_PAGE_NUMBER
     params['page_size'] ||= DEFAULT_PAGE_SIZE
     uri.query_values = params
-    logger.info "nsr: entered GET /nsrs?#{uri.query}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"nsr: entered GET /nsrs?#{uri.query}")
 
     # transform 'string' params Hash into keys
     keyed_params = keyed_hash(params)
@@ -74,11 +80,11 @@ class SonataNsRepository < Sinatra::Application
     # get rid of :page_number and :page_size
     [:page_number, :page_size].each { |k| keyed_params.delete(k) }
     valid_fields = [:page_number, :page_size]
-    logger.info "nsr: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"nsr: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}")
     json_error 400, "nsr: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
 
     requests = Nsr.paginate(page_number: params[:page_number], limit: params[:page_size]).desc(:created_at)
-    logger.info "nsr: leaving GET /requests?#{uri.query} with #{requests.to_json}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"nsr: leaving GET /requests?#{uri.query} with #{requests.to_json}")
     halt 200, requests.to_json if requests
     json_error 404, 'nsr: No requests were found'
 
@@ -93,7 +99,7 @@ class SonataNsRepository < Sinatra::Application
         return 200, nsr_yml
       end
     rescue
-      logger.error 'Error Establishing a Database Connection'
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: 'Error Establishing a Database Connection')
       return 500, 'Error Establishing a Database Connection'
     end
   end
