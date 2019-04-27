@@ -44,7 +44,7 @@ class SonataNsiRepository < Sinatra::Application
 
   @@nsir_schema = JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/slice-record/nsir-schema.yml') { |f| f.read })))
   # https and openssl libs (require 'net/https' require 'openssl') enable access to external https links behind a proxy
-  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', message:"nsir_schema #{nsir_schema.to_yaml}")
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', message:"nsir schema #{@@nsir_schema.to_yaml}")
 
   DEFAULT_PAGE_NUMBER = '0'
   DEFAULT_PAGE_SIZE = '10'
