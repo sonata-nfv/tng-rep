@@ -55,7 +55,7 @@ configure do
   Dir.mkdir("#{settings.root}/log") unless File.exist?("#{settings.root}/log")
   log_file = File.new("#{settings.root}/log/#{settings.environment}.log", 'a+')
   log_file.sync = true
-  use Rack::CommonLOGGER, log_file
+  use Rack::CommonLogger, log_file
 
   LOGGER = LOGGER.new(log_file)
   LOGGER.level = LOGGER::DEBUG
