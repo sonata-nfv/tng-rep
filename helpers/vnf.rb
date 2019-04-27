@@ -30,7 +30,7 @@
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
 
-require 'tng/gtk/utils/LOGGER'
+require 'tng/gtk/utils/logger'
 
 # @see VNFRepository
 class SonataVnfRepository < Sinatra::Application

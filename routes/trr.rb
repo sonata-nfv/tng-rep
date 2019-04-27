@@ -33,7 +33,7 @@
 require 'addressable/uri'
 require 'pp'
 require 'json'
-require 'tng/gtk/utils/LOGGER'
+require 'tng/gtk/utils/logger'
 
 # This the Class of Sonata Ns Repository
 class TangoVnVTrRepository < Sinatra::Application
