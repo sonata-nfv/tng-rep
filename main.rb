@@ -38,6 +38,7 @@ require 'sinatra/config_file'
 require 'yaml'
 require 'json-schema'
 require 'open-uri'
+require 'tng/gtk/utils/logger'
 
 # Require the bundler gem and then call Bundler.require to load in all gems
 # listed in Gemfile.
@@ -75,6 +76,10 @@ class SonataNsRepository < Sinatra::Application
   # Load configurations
   config_file 'config/config.yml'
   Mongoid.load!('config/mongoid.yml')
+  LOGGER=Tng::Gtk::Utils::Logger
+  LOGGED_COMPONENT=self.name
+  @@began_at = Time.now.utc
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")
 end
 
 # Configurations for Slice Repository
