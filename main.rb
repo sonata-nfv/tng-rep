@@ -76,10 +76,6 @@ class SonataNsRepository < Sinatra::Application
   # Load configurations
   config_file 'config/config.yml'
   Mongoid.load!('config/mongoid.yml')
-  LOGGER=Tng::Gtk::Utils::Logger
-  LOGGED_COMPONENT=self.name
-  @@began_at = Time.now.utc
-  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")
 end
 
 # Configurations for Slice Repository

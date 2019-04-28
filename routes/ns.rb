@@ -36,6 +36,10 @@ require 'json'
 
 # This is the Class of Sonata Ns Repository
 class SonataNsRepository < Sinatra::Application
+  LOGGER=Tng::Gtk::Utils::Logger
+  LOGGED_COMPONENT=self.name
+  @@began_at = Time.now.utc
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")
   @@nsr_schema = JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-record/nsr-schema.yml') { |f| f.read })))
   # https and openssl libs (require 'net/https' require 'openssl') enable access to external https links behind a proxy
   LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"nsr schema = #{@@nsr_schema.to_yaml}")
