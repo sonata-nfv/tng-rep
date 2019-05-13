@@ -30,12 +30,17 @@
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
 
+require 'tng/gtk/utils/logger'
+
 # @see VNFRepository
 class SonataVnfRepository < Sinatra::Application
-
   require 'json'
   require 'yaml'
   
+  LOGGER=Tng::Gtk::Utils::Logger
+  LOGGED_COMPONENT=self.name
+  @@began_at = Time.now.utc
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")  
   
   # Checks if a JSON message is valid
   #
@@ -48,7 +53,7 @@ class SonataVnfRepository < Sinatra::Application
       parsed_message = JSON.parse(message) # parse json message
     rescue JSON::ParserError => e
       # If JSON not valid, return with errors
-      logger.error "JSON parsing: #{e.to_s}"
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "JSON parsing: #{e.to_s}")
       return message, e.to_s + "\n"
     end
 
@@ -64,7 +69,7 @@ class SonataVnfRepository < Sinatra::Application
     begin
            JSON::Validator.validate!(schema,message)
     rescue JSON::Schema::ValidationError => e
-      logger.error "JSON validating: #{e.to_s}"
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "JSON validating: #{e.to_s}")
       return e.to_s + "\n"
     end
     nil
@@ -81,7 +86,7 @@ class SonataVnfRepository < Sinatra::Application
       parsed_message = YAML.load(message) # parse YAML message
     rescue YAML::ParserError => e
       # If YAML not valid, return with errors
-      logger.error "YAML parsing: #{e.to_s}"
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "YAML parsing: #{e.to_s}")
       return message, e.to_s + "\n"
     end
     return parsed_message, nil
@@ -97,7 +102,7 @@ class SonataVnfRepository < Sinatra::Application
     begin
       output_json = JSON.dump(input_yml)
     rescue
-      logger.error 'Error parsing from YAML to JSON'
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: 'Error parsing from YAML to JSON')
       end
   output_json
   end
@@ -114,7 +119,7 @@ class SonataVnfRepository < Sinatra::Application
     begin
       output_yml = YAML.dump(JSON.parse(input_json))
     rescue
-      logger.error 'Error parsing from JSON to YAML'
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: 'Error parsing from JSON to YAML')
       end
     output_yml
   end
@@ -131,7 +136,7 @@ class SonataVnfRepository < Sinatra::Application
     begin
       link << '<localhost:4012/virtual-network-functions?page_number=' + next_page_number.to_s + '&page_size=' + page_size.to_s + '>; rel="next"' unless next_vnfs.empty?
     rescue
-      logger.error 'Error Establishing a Database Connection'
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: 'Error Establishing a Database Connection')
     end
 
     unless page_number == 1
@@ -155,7 +160,7 @@ class SonataVnfRepository < Sinatra::Application
     begin
       link << '<localhost:4012/virtual-network-functions/name/' + name.to_s + '?page_number=' + next_page_number.to_s + '&page_size=' + page_size.to_s + '>; rel="next"' unless next_vnfs.empty?
     rescue
-      logger.error 'Error Establishing a Database Connection'
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: 'Error Establishing a Database Connection')
     end
 
     unless page_number == 1

@@ -33,11 +33,18 @@
 require 'addressable/uri'
 require 'pp'
 require 'json'
+require 'tng/gtk/utils/logger'
 
-# This Class is the Class of Sonata Network Slice Repository
+# This is the Class of Sonata Network Slice Repository
 class SonataNsiRepository < Sinatra::Application
+  LOGGER=Tng::Gtk::Utils::Logger
+  LOGGED_COMPONENT=self.name
+  @@began_at = Time.now.utc
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")
+
   @@nsir_schema = JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/slice-record/nsir-schema.yml') { |f| f.read })))
   # https and openssl libs (require 'net/https' require 'openssl') enable access to external https links behind a proxy
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', message:"nsir schema #{@@nsir_schema.to_yaml}")
 
   DEFAULT_PAGE_NUMBER = '0'
   DEFAULT_PAGE_SIZE = '10'
@@ -63,7 +70,7 @@ class SonataNsiRepository < Sinatra::Application
     params['page_number'] ||= DEFAULT_PAGE_NUMBER
     params['page_size'] ||= DEFAULT_PAGE_SIZE
     uri.query_values = params
-    logger.info "nsir: entered GET /records/nsir/ns-instances?#{uri.query}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"nsir: entered GET /records/nsir/ns-instances?#{uri.query}")
 
     # transform 'string' params Hash into keys
     keyed_params = keyed_hash(params)
@@ -74,11 +81,11 @@ class SonataNsiRepository < Sinatra::Application
     # get rid of :page_number and :page_size
     [:page_number, :page_size].each { |k| keyed_params.delete(k) }
     valid_fields = [:page_number, :page_size]
-    logger.info "nsir: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"nsir: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}")
     json_error 400, "nsir: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
 
     requests = Nsir.paginate(page_number: params[:page_number], limit: params[:page_size]).desc(:created_at)
-    logger.info "nsir: leaving GET /requests?#{uri.query} with #{requests.to_json}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"nsir: leaving GET /requests?#{uri.query} with #{requests.to_json}")
     halt 200, requests.to_json if requests
     json_error 404, 'nsir: No requests were found'
 
@@ -93,7 +100,7 @@ class SonataNsiRepository < Sinatra::Application
         return 200, nsir_yml
       end
     rescue
-      logger.error 'Error Establishing a Database Connection'
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: 'Error Establishing a Database Connection')
       return 500, 'Error Establishing a Database Connection'
     end
   end
@@ -105,6 +112,7 @@ class SonataNsiRepository < Sinatra::Application
     begin
       @nsiinstance = Nsir.find(params[:id])
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "nsir not found: #{e.to_s}")
       halt(404)
     end
     nsir_json = @nsiinstance.to_json
@@ -130,12 +138,14 @@ class SonataNsiRepository < Sinatra::Application
       instance = Nsir.find({ '_id' => instance['_id'] })
       return 409, 'ERROR: Duplicated nsir UUID'
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "nsir not found: #{e.to_s}")
       # Continue
     end
 
     begin
       instance = Nsir.create!(instance)
     rescue Moped::Errors::OperationFailure => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "ERROR: Duplicated nsir UUID: #{e.to_s}")
       return 409, 'ERROR: Duplicated nsir UUID'
     end
     return 200, instance.to_json
@@ -163,6 +173,7 @@ class SonataNsiRepository < Sinatra::Application
       nsir = Nsir.find_by('_id' => params[:id])
       puts 'nsir is found'
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "nsir not found: #{e.to_s}")
       return 404, 'nsir not found'
     end
 
@@ -174,6 +185,7 @@ class SonataNsiRepository < Sinatra::Application
       # Create a record
       new_nsir = Nsir.create!(instance)
     rescue Moped::Errors::OperationFailure => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "ERROR: Duplicated nsir UUID: #{e.to_s}")
       return 409, 'ERROR: Duplicated nsir UUID'
     end
 
@@ -187,6 +199,7 @@ class SonataNsiRepository < Sinatra::Application
       nsir = Nsir.find_by('_id' => params[:id])
       puts 'nsir is found'
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "nsir not found: #{e.to_s}")
       return 404, 'nsir not found'
     end
 

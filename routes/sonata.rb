@@ -32,26 +32,24 @@
 
 # Sonata class
 class Sonata < Sinatra::Application
+
   # @method get_log
   # @overload get '/network-services/log'
   # Returns contents of log file
   # Management method to get log file of catalogue remotely
-  get '/log' do
-    headers 'Content-Type' => 'text/plain; charset=utf8'
-    # filename = 'log/development.log'
-    filename = 'log/production.log'
-
-    # For testing purposes only
-    begin
-      txt = open(filename)
-
-    rescue => err
-      logger.error "Error reading log file: #{err}"
-      return 500, "Error reading log file: #{err}"
-    end
-
-    halt 200, txt.read.to_s
-  end
+  # get '/log' do
+  #   headers 'Content-Type' => 'text/plain; charset=utf8'
+  #   # filename = 'log/development.log'
+  #   filename = 'log/production.log'
+  #   # For testing purposes only
+  #   begin
+  #     txt = open(filename)
+  #   rescue => err
+  #     LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "Error reading log file: #{err}")
+  #     return 500, "Error reading log file: #{err}"
+  #   end
+  #   halt 200, txt.read.to_s
+  # end
 
   # @method get_root
   # @overload get '/'

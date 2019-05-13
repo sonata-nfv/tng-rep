@@ -30,11 +30,18 @@
 ## acknowledge the contributions of their colleagues of the 5GTANGO
 ## partner consortium (www.5gtango.eu).
 
+require 'tng/gtk/utils/logger'
+
 # @see VNFRepository
 class SonataVnfRepository < Sinatra::Application
-  
+  LOGGER=Tng::Gtk::Utils::Logger
+  LOGGED_COMPONENT=self.name
+  @@began_at = Time.now.utc
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")
+
   @@vnfr_schema=JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-record/vnfr-schema.yml'){|f| f.read})))
   # https and openssl libs (require 'net/https' require 'openssl') enable access to external https links behind a proxy
+  LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"vnfr schema = #{@@vnfr_schema.to_yaml}")
 
   DEFAULT_PAGE_NUMBER = '0'
   DEFAULT_PAGE_SIZE = '10'
@@ -76,7 +83,7 @@ class SonataVnfRepository < Sinatra::Application
     params['page_number'] ||= DEFAULT_PAGE_NUMBER
     params['page_size'] ||= DEFAULT_PAGE_SIZE
     uri.query_values = params
-    logger.info "vnfr: entered GET /vnfrs?#{uri.query}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"vnfr: entered GET /vnfrs?#{uri.query}")
 
     # Only accept positive numbers
     params[:page_number] = 1 if params[:page_number].to_i < 1
@@ -91,7 +98,7 @@ class SonataVnfRepository < Sinatra::Application
     # get rid of :page_number and :page_size
     [:page_number, :page_size, :descriptor_reference].each { |k| keyed_params.delete(k) }
     valid_fields = [:page_number, :page_size, :descriptor_reference]
-    logger.info "vnfrs: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"vnfrs: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}")
     json_error 400, "vnfrs: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
 
     if params[:descriptor_reference]
@@ -99,13 +106,13 @@ class SonataVnfRepository < Sinatra::Application
     else
       vnfs = Vnfr.paginate(page: params[:page_number], limit: params[:page_size]).desc(:created_at)
     end
-    logger.info "vnfs: leaving GET /vnfrs?#{uri.query} with #{vnfs.to_json}"
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"vnfs: leaving GET /vnfrs?#{uri.query} with #{vnfs.to_json}")
     halt 200, vnfs.to_json if vnfs
     json_error 404, 'vnfs: No vnfrs were found'
 
     # Get paginated list
     vnfs = Vnfr.paginate(page: params[:page_number], limit: params[:page_size]).desc(:created_at)
-    logger.debug(vnfs)
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message: "vnfs #{vnfs}")
     # Build HTTP Link Header
     headers['Link'] = build_http_link(params[:page_number].to_i, params[:page_size])
 
@@ -123,8 +130,8 @@ class SonataVnfRepository < Sinatra::Application
         vnfs_yml = json_to_yaml(vnfs_json)
         return 200, vnfs_yml
       end
-    rescue
-      logger.error 'Error Establishing a Database Connection'
+    rescue => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "Error Establishing a Database Connection #{e.to_s}")
       return 500, 'Error Establishing a Database Connection'
     end
   end
@@ -139,6 +146,7 @@ class SonataVnfRepository < Sinatra::Application
     begin
       @vnfInstance = Vnfr.find(params[:id])
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "vnfr not found: #{e.to_s}")
       halt (404)
     end
 
@@ -181,6 +189,7 @@ class SonataVnfRepository < Sinatra::Application
       instance = Vnfr.find( instance['id'] )
       return 409, 'ERROR: Duplicated VNF ID'
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "vnfr not found: #{e.to_s}")
       # Continue
     end
 
@@ -188,6 +197,7 @@ class SonataVnfRepository < Sinatra::Application
     begin
       instance = Vnfr.create!(instance)
     rescue Moped::Errors::OperationFailure => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "ERROR: Duplicated VNF ID #{e.to_s}")
       return 409, 'ERROR: Duplicated VNF ID' if e.message.include? 'E11000'
     end
 
@@ -224,6 +234,7 @@ class SonataVnfRepository < Sinatra::Application
       vnfr = Vnfr.find( instance['id'] )
       puts 'VNF is found'
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "vnfr not found: #{e.to_s}")
       return 404, 'This VNFR does not exists'
     end
 
@@ -239,6 +250,7 @@ class SonataVnfRepository < Sinatra::Application
       # Create a record
       new_vnfr = Vnfr.create!(instance)
     rescue Moped::Errors::OperationFailure => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "ERROR: Duplicated VNF ID #{e.to_s}")
       return 409, 'ERROR: Duplicated NS ID' if e.message.include? 'E11000'
     end
 
@@ -260,7 +272,8 @@ class SonataVnfRepository < Sinatra::Application
     begin
       vnf = Vnfr.find_by( {'id' =>  params[:id]})
     rescue Mongoid::Errors::DocumentNotFound => e
-      return 404,'ERROR: Operation failed'
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "vnfr not found: #{e.to_s}")
+      return 404,'ERROR: vnfr not found'
     end
     vnf.destroy
     return 200, 'OK: vnfr removed'
