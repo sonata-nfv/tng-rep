@@ -170,7 +170,7 @@ class SonataVnfRepository < Sinatra::Application
   # Post a VNF in YAML format
   # Return JSON or YAML depending on content_type
   post '/' do
-    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"vnfr: entered POST /vnfrs/#{uri.query} #{request.body}")
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"vnfr: entered POST /vnfrs/#{uri.query} #{request.body.read}")
     if request.content_type ==  'application/json'
       instance, errors = parse_json(request.body.read)
       return 400, errors.to_json if errors
@@ -218,7 +218,7 @@ class SonataVnfRepository < Sinatra::Application
   # Put a vnfr
   # Return JSON or YAML depending on content_type
   put '/:id' do
-    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"vnfr: entered PUT /vnfrs/#{uri.query} #{request.body}")
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"vnfr: entered PUT /vnfrs/#{uri.query} #{request.body.read}")
     if request.content_type ==  'application/json'
       instance, errors = parse_json(request.body.read)
       return 400, errors.to_json if errors

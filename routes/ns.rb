@@ -121,7 +121,7 @@ class SonataNsRepository < Sinatra::Application
   # @overload post "/"
   # Post a new ns information
   post '/' do
-    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"nsr: entered POST /nsrs/#{uri.query} #{request.body}")
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"nsr: entered POST /nsrs/#{uri.query} #{request.body.read}")
     return 415 unless request.content_type == 'application/json'
     # Validate JSON format
     instance, errors = parse_json(request.body.read)
@@ -154,7 +154,7 @@ class SonataNsRepository < Sinatra::Application
   # @overload put "/"
   # Puts a ns record
   put '/:id' do
-    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"nsr: entered PUT /nsrs/#{uri.query} #{request.body}")
+    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"nsr: entered PUT /nsrs/#{uri.query} #{request.body.read}")
     # Return if content-type is invalid
     415 unless request.content_type == 'application/json'
     # Validate JSON format
