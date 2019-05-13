@@ -106,12 +106,10 @@ class SonataNsRepository < Sinatra::Application
   # @overload get "/"
   # Gets instances with an id
   get '/:id' do
-    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"nsr: entered GET /nsrs/#{uri.query}")
     begin
       @nsinstance = Nsr.find(params[:id])
     rescue Mongoid::Errors::DocumentNotFound => e
-      # LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "DocumentNotFound: #{e.to_s}")
-      halt(404)
+¡      halt(404)
     end
     nsr_json = @nsinstance.to_json
     return 200, nsr_json
@@ -121,7 +119,6 @@ class SonataNsRepository < Sinatra::Application
   # @overload post "/"
   # Post a new ns information
   post '/' do
-    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"nsr: entered POST /nsrs/#{uri.query} #{request.body.read}")
     return 415 unless request.content_type == 'application/json'
     # Validate JSON format
     instance, errors = parse_json(request.body.read)
@@ -137,7 +134,6 @@ class SonataNsRepository < Sinatra::Application
       instance = Nsr.find({ '_id' => instance['_id'] })
       return 409, 'ERROR: Duplicated nsr UUID'
     rescue Mongoid::Errors::DocumentNotFound => e
-      # LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "DocumentNotFound: #{e.to_s}")
       # Continue
     end
 
@@ -154,7 +150,6 @@ class SonataNsRepository < Sinatra::Application
   # @overload put "/"
   # Puts a ns record
   put '/:id' do
-    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"nsr: entered PUT /nsrs/#{uri.query} #{request.body.read}")
     # Return if content-type is invalid
     415 unless request.content_type == 'application/json'
     # Validate JSON format
@@ -173,7 +168,6 @@ class SonataNsRepository < Sinatra::Application
       nsr = Nsr.find_by('_id' => params[:id])
       puts 'nsr is found'
     rescue Mongoid::Errors::DocumentNotFound => e
-      # LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "nsr not found: #{e.to_s}")
       return 404, 'nsr not found'
     end
 
@@ -194,13 +188,11 @@ class SonataNsRepository < Sinatra::Application
   end
 
   delete '/:id' do
-    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"nsr: entered DELETE /nsrs/#{uri.query}")
     # Return if content-type is invalid
     begin
       nsr = Nsr.find_by('_id' => params[:id])
       puts 'nsr is found'
     rescue Mongoid::Errors::DocumentNotFound => e
-      # LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "nsr not found: #{e.to_s}")
       return 404, 'nsr not found'
     end
 

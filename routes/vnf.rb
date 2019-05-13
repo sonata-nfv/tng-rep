@@ -143,11 +143,9 @@ class SonataVnfRepository < Sinatra::Application
   #   - JSON (default)
   #   - YAML including output parameter (e.g /?output=YAML)
   get '/:id' do
-    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"vnfr: entered GET /vnfrs/#{uri.query}")
     begin
       @vnfInstance = Vnfr.find(params[:id])
     rescue Mongoid::Errors::DocumentNotFound => e
-      # LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "vnfr not found: #{e.to_s}")
       return 404, 'This VNFR does not exists'
     end
 
@@ -170,7 +168,6 @@ class SonataVnfRepository < Sinatra::Application
   # Post a VNF in YAML format
   # Return JSON or YAML depending on content_type
   post '/' do
-    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"vnfr: entered POST /vnfrs/#{uri.query} #{request.body.read}")
     if request.content_type ==  'application/json'
       instance, errors = parse_json(request.body.read)
       return 400, errors.to_json if errors
@@ -190,7 +187,6 @@ class SonataVnfRepository < Sinatra::Application
       instance = Vnfr.find( instance['id'] )
       return 409, 'ERROR: Duplicated VNF ID'
     rescue Mongoid::Errors::DocumentNotFound => e
-      # LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message: "vnfr not duplicated")
       # Continue
     end
 
@@ -218,7 +214,6 @@ class SonataVnfRepository < Sinatra::Application
   # Put a vnfr
   # Return JSON or YAML depending on content_type
   put '/:id' do
-    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"vnfr: entered PUT /vnfrs/#{uri.query} #{request.body.read}")
     if request.content_type ==  'application/json'
       instance, errors = parse_json(request.body.read)
       return 400, errors.to_json if errors
@@ -235,7 +230,6 @@ class SonataVnfRepository < Sinatra::Application
       vnfr = Vnfr.find( instance['id'] )
       puts 'VNF is found'
     rescue Mongoid::Errors::DocumentNotFound => e
-      # LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "vnfr not found: #{e.to_s}")
       return 404, 'This VNFR does not exists'
     end
 
@@ -270,11 +264,9 @@ class SonataVnfRepository < Sinatra::Application
   #	Delete a vnf by its ID
   # Delete a vnf
   delete '/:id' do
-    LOGGER.debug(component:LOGGED_COMPONENT, operation:'msg', message:"vnfr: entered DELETE /vnfrs/#{uri.query}")
     begin
       vnf = Vnfr.find_by( {'id' =>  params[:id]})
     rescue Mongoid::Errors::DocumentNotFound => e
-      # LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "vnfr not found: #{e.to_s}")
       return 404,'ERROR: vnfr not found'
     end
     vnf.destroy
