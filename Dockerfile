@@ -45,12 +45,15 @@ RUN bundle install
 FROM ruby:2.4.3-slim-stretch
 COPY --from=0 /usr/local/bundle /usr/local/bundle
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends libcurl3 libcurl3-gnutls libcurl4-openssl-dev && \
+    apt-get install -y --no-install-recommends libcurl3 libcurl3-gnutls libcurl4-openssl-dev wget && \
           apt-get clean && \
           apt-get autoremove && \
           rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY . /app
+RUN wget -O /schemas/vnfr-schema.yml https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-record/vnfr-schema.yml
+RUN wget -O /schemas/nsr-schema.yml https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-record/nsr-schema.yml
+RUN wget -O /schemas/nsir-schema.yml https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/slice-record/nsir-schema.yml
 ENV PORT 4012
 ENV SEC_FLAG false
 ENV MAIN_DB tng-rep

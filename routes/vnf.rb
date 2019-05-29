@@ -38,9 +38,22 @@ class SonataVnfRepository < Sinatra::Application
   LOGGED_COMPONENT=self.name
   @@began_at = Time.now.utc
   LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")
-
-  @@vnfr_schema=JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-record/vnfr-schema.yml'){|f| f.read})))
   # https and openssl libs (require 'net/https' require 'openssl') enable access to external https links behind a proxy
+  begin
+    @@vnfr_schema=JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-record/vnfr-schema.yml'){|f| f.read})))
+  rescue
+    @@vnfr_schema = JSON.parse(JSON.dump(YAML.load(File.open('/schemas/vnfr-schema.yml') { |f| f.read })))
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"Using local schema")
+  rescue SyntaxError
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"YAML load error")
+  rescue JSON::ParserError
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"JSON Parser Error")
+  rescue Errno::ENOENT => e
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"File or directory /schemas/nsr-schema.yml doesn't exist.")
+  rescue Errno::EACCES => e
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"Can't read from /schemas/nsr-schema.yml. No permission.")
+  end
+
   LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"vnfr schema = #{@@vnfr_schema.to_yaml}")
 
   DEFAULT_PAGE_NUMBER = '0'
