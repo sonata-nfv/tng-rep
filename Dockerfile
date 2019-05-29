@@ -51,6 +51,7 @@ RUN apt-get update && \
           rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY . /app
+RUN mkdir -p /schemas
 RUN wget -O /schemas/vnfr-schema.yml https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-record/vnfr-schema.yml
 RUN wget -O /schemas/nsr-schema.yml https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-record/nsr-schema.yml
 RUN wget -O /schemas/nsir-schema.yml https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/slice-record/nsir-schema.yml
