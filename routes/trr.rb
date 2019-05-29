@@ -112,6 +112,7 @@ class TangoVnVTrRepository < Sinatra::Application
     begin
       @nsinstance = Trr.find(params[:id])
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "test-plan not found: #{e.to_s}")
       halt(404)
     end
     trr_json = @nsinstance.to_json
@@ -138,6 +139,7 @@ class TangoVnVTrRepository < Sinatra::Application
       instance = Trr.find({ '_id' => instance['_id'] })
       return 409, 'ERROR: Duplicated trr UUID'
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message: "trr not duplicated")
       # Continue
     end
 
@@ -173,6 +175,7 @@ class TangoVnVTrRepository < Sinatra::Application
       trr = Trr.find_by('_id' => params[:id])
       puts 'trr is found'
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "trr not found: #{e.to_s}")
       return 404, 'trr not found'
     end
 
@@ -186,6 +189,7 @@ class TangoVnVTrRepository < Sinatra::Application
       new_trr = Trr.create!(instance)
     rescue Moped::Errors::OperationFailure => e
       return 409, 'ERROR: Duplicated trr UUID'
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "trr duplicated")
     end
 
     trr_json = new_trr.to_json
@@ -310,6 +314,7 @@ class TangoVnVTrRepository < Sinatra::Application
       instance = Tsr.find({ '_id' => instance['_id'] })
       return 409, 'ERROR: Duplicated trr UUID'
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message: "test-suite-result not duplicated}")
       # Continue
     end
 
@@ -317,6 +322,7 @@ class TangoVnVTrRepository < Sinatra::Application
       instance['_id'] = SecureRandom.uuid
       instance = Tsr.create!(instance)
     rescue Moped::Errors::OperationFailure => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "tsr duplicated: #{e.to_s}")
       return 409, 'ERROR: Duplicated trr UUID'
     end
     return 200, instance.to_json
@@ -334,7 +340,7 @@ class TangoVnVTrRepository < Sinatra::Application
     return 400, errors.to_json if errors
     # Retrieve stored version
     #new_trr = instance
-    
+
     # Validation against schema
     #errors = validate_json(new_trr, @@trr_schema)
 
@@ -345,6 +351,7 @@ class TangoVnVTrRepository < Sinatra::Application
       trr = Tsr.find_by('_id' => params[:id])
       puts 'trr is found'
     rescue Mongoid::Errors::DocumentNotFound => e
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "tsr not found: #{e.to_s}")
       return 404, 'trr not found'
     end
 
