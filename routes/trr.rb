@@ -258,8 +258,6 @@ class TangoVnVTrRepository < Sinatra::Application
     end
     
     fields = ['created_at', 'instance_uuid', 'package_id', 'service_uuid', 'status', 'test_plan_id', 'test_uuid', 'updated_at', '_id']
-    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"all fields #{requests.to_json}")
-    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"only fields #{requests.to_json(:only => fields)}")
     halt 200, requests.to_json(:only => fields) if requests
     
 #    halt 200, requests.to_json if requests
