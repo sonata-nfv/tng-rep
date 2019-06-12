@@ -286,7 +286,7 @@ class TangoVnVTrRepository < Sinatra::Application
   
   get '/test-suite-results/:id' do
     begin
-      @nsinstance = Tsr.find_by('uuid' => params[:_id])
+      @nsinstance = Tsr.find_by('_id' => params[:id])
     rescue Mongoid::Errors::DocumentNotFound => e
       halt(404)
     end
