@@ -239,8 +239,8 @@ class TangoVnVTrRepository < Sinatra::Application
     headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
     headers[:params] = params unless params.empty?
     # get rid of :page_number and :page_size
-    [:page_number, :page_size, :ns_uuid, :test_uuid].each { |k| keyed_params.delete(k) }
-    valid_fields = [:page_number, :page_size, :ns_uuid, :test_uuid]
+    [:page_number, :page_size, :ns_uuid, :test_uuid, :uuid].each { |k| keyed_params.delete(k) }
+    valid_fields = [:page_number, :page_size, :ns_uuid, :test_uuid, :uuid]
     LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"trr: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}")
     json_error 400, "trr: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
 
@@ -248,6 +248,8 @@ class TangoVnVTrRepository < Sinatra::Application
       requests = Tsr.paginate(page_number: params[:page_number], limit: params[:page_size]).where("ns_uuid" => params[:ns_uuid]).desc(:created_at)
     elsif params[:test_uuid]
       requests = Tsr.paginate(page_number: params[:page_number], limit: params[:page_size]).where("test_uuid" => params[:test_uuid]).desc(:created_at)
+    elsif params[:uuid]
+      requests = Tsr.paginate(page_number: params[:page_number], limit: params[:page_size]).where("_id" => params[:uuid]).desc(:created_at)
     elsif
       requests = Tsr.paginate(page_number: params[:page_number], limit: params[:page_size]).desc(:created_at)
     end
@@ -256,7 +258,12 @@ class TangoVnVTrRepository < Sinatra::Application
     if params[:test_uuid]
       halt 200, requests.to_json
     end
-    
+
+    if params[:uuid]
+      halt 200, requests.to_json
+    end
+
+
     fields = ['created_at', 'instance_uuid', 'package_id', 'service_uuid', 'status', 'test_plan_id', 'test_uuid', 'updated_at', '_id']
     halt 200, requests.to_json(:only => fields) if requests
     
