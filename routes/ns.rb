@@ -72,6 +72,17 @@ class SonataNsRepository < Sinatra::Application
     halt 200, 'pong'
    end
 
+  get '/uptime' do
+    # uptime = Time.at(IO.read('/proc/uptime').split[0].to_f).utc.strftime("Years %y Months: %m Hours %H Minutes %M Seconds %S UP")
+    seconds = IO.read('/proc/uptime').split[0].to_f
+    time = [seconds / 3600, seconds / 60 % 60, seconds % 60].map { |t| t.to_int.to_s.rjust(2,'0') }.join(':')
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"nsr: entered GET /nsrs/uptime}")
+    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"Uptime: #{time}")
+    reply = {}
+    reply['uptime'] = time.to_s
+    return 200, reply.to_json
+  end
+
   # @method get_ns-instances
   # @overload get "/ns-instances"
   # Gets all ns-instances
@@ -88,13 +99,18 @@ class SonataNsRepository < Sinatra::Application
     # Get paginated list
     headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
     headers[:params] = params unless params.empty?
-    # get rid of :page_number and :page_size
-    [:page_number, :page_size].each { |k| keyed_params.delete(k) }
-    valid_fields = [:page_number, :page_size]
-    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"nsr: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}")
-    json_error 400, "nsr: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
-
-    requests = Nsr.paginate(page_number: params[:page_number], limit: params[:page_size]).desc(:created_at)
+    if keyed_params.key?(:count)
+      count = Nsr.where('status' => 'normal operation').count()
+      requests = {}
+      requests['count'] = count.to_s
+    else
+      # get rid of :page_number and :page_size
+      [:page_number, :page_size].each { |k| keyed_params.delete(k) }
+      valid_fields = [:page_number, :page_size]
+      LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"nsr: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}")
+      json_error 400, "nsr: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
+      requests = Nsr.paginate(page_number: params[:page_number], limit: params[:page_size]).desc(:created_at)
+    end
     LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"nsr: leaving GET /requests?#{uri.query} with #{requests.to_json}")
     halt 200, requests.to_json if requests
     json_error 404, 'nsr: No requests were found'
