@@ -99,7 +99,7 @@ RSpec.describe SonataNsiRepository do
   describe 'GET /ns-instances/:uuid' do
     context 'with (UU)ID given' do
       before do
-        get '/ns-instances/dc1f7e6b-b5ce-4e4c-b81f-6f35bc8a5356'
+        get '/ns-instances/69e4a590-7417-4786-a629-1604636b06a6'
       end
       subject { last_response }
       its(:status) { is_expected.to eq 200 }
@@ -109,7 +109,7 @@ RSpec.describe SonataNsiRepository do
   describe 'DELETE /ns-instances/:uuid' do
     context 'with (UU)ID given' do
       before do
-        delete '/ns-instances/dc1f7e6b-b5ce-4e4c-b81f-6f35bc8a5356'
+        delete '/ns-instances/69e4a590-7417-4786-a629-1604636b06a6'
       end
       subject { last_response }
       its(:status) { is_expected.to eq 200 }
