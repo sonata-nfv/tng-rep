@@ -92,13 +92,18 @@ class SonataNsiRepository < Sinatra::Application
     # Get paginated list
     headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
     headers[:params] = params unless params.empty?
-    # get rid of :page_number and :page_size
-    [:page_number, :page_size].each { |k| keyed_params.delete(k) }
-    valid_fields = [:page_number, :page_size]
-    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"nsir: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}")
-    json_error 400, "nsir: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
-
-    requests = Nsir.paginate(page_number: params[:page_number], limit: params[:page_size]).desc(:created_at)
+    if keyed_params.key?(:count)
+      count = Nsir.where('status' => 'normal operation').count()
+      requests = {}
+      requests['count'] = count.to_s
+    else
+      # get rid of :page_number and :page_size
+      [:page_number, :page_size].each { |k| keyed_params.delete(k) }
+      valid_fields = [:page_number, :page_size]
+      LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"nsir: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}")
+      json_error 400, "nsir: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
+      requests = Nsir.paginate(page_number: params[:page_number], limit: params[:page_size]).desc(:created_at)
+    end
     LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"nsir: leaving GET /requests?#{uri.query} with #{requests.to_json}")
     halt 200, requests.to_json if requests
     json_error 404, 'nsir: No requests were found'
