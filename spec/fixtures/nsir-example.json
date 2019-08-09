@@ -3,7 +3,6 @@
 	"id": "69e4a590-7417-4786-a629-1604636b06a6",
 	"name": "NSI_example",
 	"description": "This is the description of a NSI.",
-	"vendor": "5GTango",
 	"nst-ref": "8859d979-e264-45b4-b6bf-a3a5f4df3732",
 	"nst-name": "NST_example_name",
 	"nst-version": "3.0",
