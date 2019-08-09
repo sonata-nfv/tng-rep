@@ -108,16 +108,22 @@ class SonataVnfRepository < Sinatra::Application
     # Get paginated list
     headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
     headers[:params] = params unless params.empty?
-    # get rid of :page_number and :page_size
-    [:page_number, :page_size, :descriptor_reference].each { |k| keyed_params.delete(k) }
-    valid_fields = [:page_number, :page_size, :descriptor_reference]
-    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"vnfrs: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}")
-    json_error 400, "vnfrs: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
-
-    if params[:descriptor_reference]
-      vnfs = Vnfr.paginate(page: params[:page_number], limit: params[:page_size]).where("descriptor_reference" => params[:descriptor_reference]).desc(:created_at)
+    if keyed_params.key?(:count)
+      count = Vnfr.where('status' => 'normal operation').count()
+      vnfs = {}
+      vnfs['count'] = count.to_s
     else
-      vnfs = Vnfr.paginate(page: params[:page_number], limit: params[:page_size]).desc(:created_at)
+      # get rid of :page_number and :page_size
+      [:page_number, :page_size, :descriptor_reference].each { |k| keyed_params.delete(k) }
+      valid_fields = [:page_number, :page_size, :descriptor_reference]
+      LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"vnfrs: keyed_params.keys - valid_fields = #{keyed_params.keys - valid_fields}")
+      json_error 400, "vnfrs: wrong parameters #{params}" unless keyed_params.keys - valid_fields == []
+
+      if params[:descriptor_reference]
+        vnfs = Vnfr.paginate(page: params[:page_number], limit: params[:page_size]).where("descriptor_reference" => params[:descriptor_reference]).desc(:created_at)
+      else
+        vnfs = Vnfr.paginate(page: params[:page_number], limit: params[:page_size]).desc(:created_at)
+      end
     end
     LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"vnfs: leaving GET /vnfrs?#{uri.query} with #{vnfs.to_json}")
     halt 200, vnfs.to_json if vnfs
