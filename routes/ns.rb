@@ -72,17 +72,6 @@ class SonataNsRepository < Sinatra::Application
     halt 200, 'pong'
    end
 
-  get '/uptime' do
-    # uptime = Time.at(IO.read('/proc/uptime').split[0].to_f).utc.strftime("Years %y Months: %m Hours %H Minutes %M Seconds %S UP")
-    seconds = IO.read('/proc/uptime').split[0].to_f
-    time = [seconds / 3600, seconds / 60 % 60, seconds % 60].map { |t| t.to_int.to_s.rjust(2,'0') }.join(':')
-    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"nsr: entered GET /nsrs/uptime}")
-    LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"Uptime: #{time}")
-    reply = {}
-    reply['uptime'] = time.to_s
-    return 200, reply.to_json
-  end
-
   # @method get_ns-instances
   # @overload get "/ns-instances"
   # Gets all ns-instances
