@@ -93,7 +93,7 @@ class SonataNsiRepository < Sinatra::Application
     headers = { 'Accept' => 'application/json', 'Content-Type' => 'application/json' }
     headers[:params] = params unless params.empty?
     if keyed_params.key?(:count)
-      count = Nsir.where('status' => 'normal operation').count()
+      count = Nsir.where('nsi-status' => 'INSTANTIATED').count()
       requests = {}
       requests['count'] = count.to_s
     else
