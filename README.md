@@ -1,4 +1,4 @@
-[![Join the chat at https://gitter.im/sonata-nfv/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sonata-nfv/Lobby) 
+[![Join the chat at https://gitter.im/sonata-nfv/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sonata-nfv/Lobby) [![Join the chat at https://gitter.im/sonata-nfv/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sonata-nfv/Lobby)
 
 <p align="center"><img src="https://github.com/sonata-nfv/tng-api-gtw/wiki/images/sonata-5gtango-logo-500px.png" /></p>
 
@@ -101,7 +101,6 @@ curl -X POST --data-binary @test_nsr.yaml -H "Content-type:application/x-yaml" h
 curl -X POST --data-binary @test_vnfr.yaml -H "Content-type:application/x-yaml" http://localhost:4012/records/vnfr
 ```
 
-
 ### API Documentation
 
 API documentation in Swagger can be accessed from https://raw.githubusercontent.com/sonata-nfv/tng-rep/master/doc/tng-rep.yaml
@@ -130,4 +129,5 @@ The following lead developers are responsible for this repository and have admin
 
 #### Feedback-Channel
 
-Please use the GitHub issues and the 5GTANGO development mailing list sonata-dev@lists.atosresearch.eu for feedback.
+* Please use the GitHub issues to report bugs.
+* You may use the mailing list [sonata-dev@lists.atosresearch.eu](mailto:sonata-dev@lists.atosresearch.eu)
