@@ -1,4 +1,5 @@
 [![Join the chat at https://gitter.im/sonata-nfv/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sonata-nfv/Lobby) [![Join the chat at https://gitter.im/sonata-nfv/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sonata-nfv/Lobby)
+[![Build Status](http://jenkins.sonata-nfv.eu/buildStatus/icon?job=tng-rep/master)](http://jenkins.sonata-nfv.eu/job/tng-rep/master) [![Join the chat at https://gitter.im/sonata-nfv/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sonata-nfv/Lobby)
 
 <p align="center"><img src="https://github.com/sonata-nfv/tng-api-gtw/wiki/images/sonata-5gtango-logo-500px.png" /></p>
 
@@ -127,7 +128,9 @@ The following lead developers are responsible for this repository and have admin
 * Felipe Vicens (felipevicens)
 * José Bonnet (jbonnet)
 
-#### Feedback-Channel
+####  Feedback-Channel
 
 * Please use the GitHub issues to report bugs.
-* You may use the mailing list [sonata-dev@lists.atosresearch.eu](mailto:sonata-dev@lists.atosresearch.eu)
+- You may use the mailing list [sonata-dev-list](mailto:sonata-dev@lists.atosresearch.eu)
+- Gitter room [![Gitter](https://badges.gitter.im/sonata-nfv/Lobby.svg)](https://gitter.im/sonata-nfv/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
