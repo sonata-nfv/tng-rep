@@ -208,7 +208,7 @@ class SonataNsRepository < Sinatra::Application
       # Create a record
       new_nsr = Nsr.create!(instance)
     rescue Moped::Errors::OperationFailure => e
-      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "ERROR: Duplicated nsr UUID: #{e.to_s}")      
+      LOGGER.error(component:LOGGED_COMPONENT, operation:'msg', message: "ERROR: Duplicated nsr UUID: #{e.to_s}")
       return 409, 'ERROR: Duplicated nsr UUID'
     end
 
