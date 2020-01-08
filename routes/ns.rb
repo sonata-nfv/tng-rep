@@ -41,7 +41,7 @@ class SonataNsRepository < Sinatra::Application
   @@began_at = Time.now.utc
   LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")
   begin
-    @@nsr_schema = JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/service-record/nsr-schema.yml') { |f| f.read })))
+    @@nsr_schema = JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/v5.1/service-record/nsr-schema.yml') { |f| f.read })))
   rescue
     @@nsr_schema = JSON.parse(JSON.dump(YAML.load(File.open('/schemas/nsr-schema.yml') { |f| f.read })))
     LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"Using local schema")
