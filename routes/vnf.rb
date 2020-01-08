@@ -40,7 +40,7 @@ class SonataVnfRepository < Sinatra::Application
   LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")
   # https and openssl libs (require 'net/https' require 'openssl') enable access to external https links behind a proxy
   begin
-    @@vnfr_schema=JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/function-record/vnfr-schema.yml'){|f| f.read})))
+    @@vnfr_schema=JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/v5.1/function-record/vnfr-schema.yml'){|f| f.read})))
   rescue
     @@vnfr_schema = JSON.parse(JSON.dump(YAML.load(File.open('/schemas/vnfr-schema.yml') { |f| f.read })))
     LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"Using local schema")
