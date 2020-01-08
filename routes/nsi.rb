@@ -42,7 +42,7 @@ class SonataNsiRepository < Sinatra::Application
   @@began_at = Time.now.utc
   LOGGER.info(component:LOGGED_COMPONENT, operation:'initializing', start_stop: 'START', message:"Started at #{@@began_at}")
   begin
-    @@nsir_schema = JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/master/slice-record/nsir-schema.yml') { |f| f.read })))
+    @@nsir_schema = JSON.parse(JSON.dump(YAML.load(open('https://raw.githubusercontent.com/sonata-nfv/tng-schema/v5.1/slice-record/nsir-schema.yml') { |f| f.read })))
   rescue
     @@nsir_schema = JSON.parse(JSON.dump(YAML.load(File.open('/schemas/nsir-schema.yml') { |f| f.read })))
     LOGGER.info(component:LOGGED_COMPONENT, operation:'msg', message:"Using local schema")
